@@ -3,16 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adventure Puzzle Island</title>
+  <title>Puzzle Buddies Island</title>
   <style>
-    *{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(#bfe8ff,#e8fff7,#fff8dc);color:#1f2937} .wrap{max-width:980px;margin:0 auto;padding:16px} .box,.card{background:rgba(255,255,255,.95);border-radius:22px;box-shadow:0 10px 24px rgba(0,0,0,.08)} .box{padding:16px;margin-bottom:16px} .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap} .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center} .stars{background:#fef3c7;padding:10px 14px;border-radius:16px;font-weight:bold} button{border:none;border-radius:16px;padding:12px 18px;font-size:16px;background:#2563eb;color:#fff;cursor:pointer} button.alt{background:#fff;color:#1f2937;border:1px solid #cbd5e1} button:disabled{opacity:.5;cursor:not-allowed} .center{text-align:center} .hero{font-size:58px;margin-bottom:10px} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px} .card{padding:18px;text-align:center} .icon{font-size:54px;margin-bottom:8px} .muted{color:#64748b} .map-wrap{position:relative;min-height:420px;border-radius:28px;padding:20px;background:linear-gradient(180deg,#93c5fd 0%,#bae6fd 48%,#67e8f9 49%,#22d3ee 100%);overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.10)} .map-wrap:before{content:'';position:absolute;inset:auto -40px -30px -40px;height:120px;background:linear-gradient(180deg,#34d399,#10b981);border-radius:50% 50% 0 0/100% 100% 0 0;opacity:.9} .path-dot{position:absolute;width:18px;height:18px;background:#fff;border:4px solid #f59e0b;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.12)} .island-node{position:absolute;width:170px;padding:14px;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:0 10px 24px rgba(0,0,0,.12);text-align:center;cursor:pointer;transition:transform .18s ease,opacity .18s ease} .island-node:hover{transform:translateY(-3px)} .island-node.locked{opacity:.6} .node-badge{display:inline-block;margin-top:8px;padding:4px 10px;border-radius:999px;background:#fef3c7;font-weight:bold;font-size:12px} .map-title{position:relative;z-index:1;text-align:center;color:#0f172a;margin-bottom:12px} .map-sub{position:relative;z-index:1;text-align:center;color:#334155;margin-bottom:18px} .puzzles{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px} .tile{padding:20px;border-radius:22px;text-align:left;box-shadow:0 10px 24px rgba(0,0,0,.08);cursor:pointer;position:relative} .tile.done{opacity:.55;filter:saturate(.75)} .done-tag{position:absolute;top:10px;right:10px;background:#22c55e;color:#fff;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:bold} .memory{background:#dbeafe}.shape{background:#d1fae5}.maze{background:#fde68a} .big{font-size:40px;margin-bottom:8px} .memory-board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px} .memory-card{aspect-ratio:1/1;border-radius:18px;font-size:34px;background:#7dd3fc;display:flex;align-items:center;justify-content:center} .memory-card.on{background:#fde68a} .shape-grid,.maze-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:520px;margin:0 auto} .shape-btn{background:#d1fae5;border-radius:20px;padding:22px;font-size:46px;color:#111827;box-shadow:0 8px 18px rgba(0,0,0,.08)} .maze-board{display:grid;grid-template-columns:repeat(5,52px);gap:8px;justify-content:center;margin:16px 0} .cell{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:#e0f2fe} .wall{background:#334155}.goal{background:#bbf7d0}.player{background:#fde68a} .status{min-height:24px;margin-top:14px;font-weight:bold} @media(max-width:640px){.maze-board{grid-template-columns:repeat(5,46px)}.cell{width:46px;height:46px}.memory-card{font-size:28px}}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(#bfe8ff,#e8fff7,#fff8dc);color:#1f2937}
+    .wrap{max-width:980px;margin:0 auto;padding:16px}
+    .box,.card{background:rgba(255,255,255,.95);border-radius:22px;box-shadow:0 10px 24px rgba(0,0,0,.08)}
+    .box{padding:16px;margin-bottom:16px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .stars{background:#fef3c7;padding:10px 14px;border-radius:16px;font-weight:bold}
+    button{border:none;border-radius:16px;padding:12px 18px;font-size:16px;background:#2563eb;color:#fff;cursor:pointer}
+    button.alt{background:#fff;color:#1f2937;border:1px solid #cbd5e1}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    .center{text-align:center}
+    .hero{font-size:58px;margin-bottom:10px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+    .card{padding:18px;text-align:center}
+    .icon{font-size:54px;margin-bottom:8px}
+    .muted{color:#64748b}
+    .map-wrap{position:relative;min-height:420px;border-radius:28px;padding:20px;background:linear-gradient(180deg,#93c5fd 0%,#bae6fd 48%,#67e8f9 49%,#22d3ee 100%);overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.10)}
+    .map-wrap:before{content:'';position:absolute;inset:auto -40px -30px -40px;height:120px;background:linear-gradient(180deg,#34d399,#10b981);border-radius:50% 50% 0 0/100% 100% 0 0;opacity:.9}
+    .path-dot{position:absolute;width:18px;height:18px;background:#fff;border:4px solid #f59e0b;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.12)}
+    .island-node{position:absolute;width:170px;padding:14px;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:0 10px 24px rgba(0,0,0,.12);text-align:center;cursor:pointer;transition:transform .18s ease,opacity .18s ease}
+    .island-node:hover{transform:translateY(-3px)}
+    .island-node.locked{opacity:.6}
+    .node-badge{display:inline-block;margin-top:8px;padding:4px 10px;border-radius:999px;background:#fef3c7;font-weight:bold;font-size:12px}
+    .map-title{position:relative;z-index:1;text-align:center;color:#0f172a;margin-bottom:12px}
+    .map-sub{position:relative;z-index:1;text-align:center;color:#334155;margin-bottom:18px}
+    .puzzles{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+    .tile{padding:20px;border-radius:22px;text-align:left;box-shadow:0 10px 24px rgba(0,0,0,.08);cursor:pointer;position:relative;transition:transform .18s ease,opacity .18s ease}
+    .tile:hover{transform:translateY(-2px)}
+    .tile.done{opacity:.55;filter:saturate(.75)}
+    .done-tag{position:absolute;top:10px;right:10px;background:#22c55e;color:#fff;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:bold}
+    .memory{background:linear-gradient(135deg,#dbeafe,#bfdbfe)}
+    .shape{background:linear-gradient(135deg,#d1fae5,#a7f3d0)}
+    .maze{background:linear-gradient(135deg,#fde68a,#fdba74)}
+    .big{font-size:40px;margin-bottom:8px}
+    .memory-board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .memory-card{aspect-ratio:1/1;border-radius:18px;font-size:34px;background:#7dd3fc;display:flex;align-items:center;justify-content:center}
+    .memory-card.on{background:#fde68a}
+    .shape-grid,.maze-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:520px;margin:0 auto}
+    .shape-btn{background:#d1fae5;border-radius:20px;padding:22px;font-size:46px;color:#111827;box-shadow:0 8px 18px rgba(0,0,0,.08)}
+    .maze-board{display:grid;grid-template-columns:repeat(7,52px);gap:8px;justify-content:center;margin:16px 0;padding:16px;border-radius:24px;background:linear-gradient(180deg,#dbeafe,#eef9ff)}
+    .cell{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:#e0f2fe;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+    .wall{background:linear-gradient(180deg,#475569,#334155)}
+    .goal{background:linear-gradient(180deg,#86efac,#4ade80)}
+    .player{background:linear-gradient(180deg,#fde68a,#fbbf24)}
+    .tele{background:linear-gradient(180deg,#c4b5fd,#8b5cf6)}
+    .key{background:linear-gradient(180deg,#fde68a,#f59e0b)}
+    .status{min-height:24px;margin-top:14px;font-weight:bold}
+    .maze-hint{margin-top:8px;color:#64748b;font-size:14px}
+    @media(max-width:640px){.maze-board{grid-template-columns:repeat(7,40px);gap:6px;padding:10px}.cell{width:40px;height:40px;font-size:20px}.memory-card{font-size:28px}}
   </style>
 </head>
 <body>
 <div class="wrap">
   <div class="box top">
     <div>
-      <h1 style="margin:0">Adventure Puzzle Island</h1>
+      <h1 style="margin:0">Puzzle Buddies Island</h1>
       <div class="muted">Offline-friendly puzzle fun for kids</div>
     </div>
     <div class="controls">
@@ -50,138 +99,213 @@
     {emoji:'❤️',options:['⭕','❤️','🔺']}
   ];
   const mazes={
-  1:[
-    ['P','0','K','0','1','0','T'],
-    ['1','0','1','0','1','0','1'],
-    ['0','0','0','0','1','0','0'],
-    ['0','1','1','0','0','1','0'],
-    ['0','0','0','1','0','0','0'],
-    ['1','0','1','0','0','1','0'],
-    ['T','0','0','0','1','0','G']
-  ],
-  2:[
-    ['P','0','1','0','K','1','0'],
-    ['1','0','1','0','1','0','0'],
-    ['0','0','1','0','1','0','1'],
-    ['0','1','0','0','0','0','0'],
-    ['0','1','0','1','1','1','0'],
-    ['0','0','0','0','0','1','0'],
-    ['1','1','1','1','0','0','G']
-  ],
-  3:[
-    ['P','0','1','0','0','1','0'],
-    ['0','0','1','0','1','0','0'],
-    ['0','1','1','0','1','0','1'],
-    ['0','0','0','K','0','0','0'],
-    ['1','1','0','1','1','0','1'],
-    ['0','0','0','0','1','0','0'],
-    ['0','1','1','0','0','0','G']
-  ]
-};
-  let state={screen:'menu',activeIsland:1,stars:0,completed:[],message:'Welcome, explorer!',soundOn:true,musicOn:false,selectedCharacter:'cat',stickerBook:[],unlocked:['cat'],lastChestOpen:0,latestReward:'',memoryDeck:[],memoryPicked:[],memoryBusy:false,shapeGame:{rounds:[],index:0,cheer:''},maze:{grid:[],player:{r:0,c:0},goal:{r:0,c:0},cheer:''}};
-  const app=document.getElementById('app'); const msg=document.getElementById('messageBox'); const star=document.getElementById('starCount'); const soundBtn=document.getElementById('soundBtn'); const musicBtn=document.getElementById('musicBtn');
+    1:[
+      ['P','0','K','0','1','0','T'],
+      ['1','0','1','0','1','0','1'],
+      ['0','0','0','0','1','0','0'],
+      ['0','1','1','0','0','1','0'],
+      ['0','0','0','1','0','0','0'],
+      ['1','0','1','0','0','1','0'],
+      ['T','0','0','0','1','0','G']
+    ],
+    2:[
+      ['P','0','1','0','K','1','0'],
+      ['1','0','1','0','1','0','0'],
+      ['0','0','1','0','1','0','1'],
+      ['0','1','0','0','0','0','0'],
+      ['0','1','0','1','1','1','0'],
+      ['0','0','0','0','0','1','0'],
+      ['1','1','1','1','0','0','G']
+    ],
+    3:[
+      ['P','0','1','0','0','1','0'],
+      ['0','0','1','0','1','0','0'],
+      ['0','1','1','0','1','0','1'],
+      ['0','0','0','K','0','0','0'],
+      ['1','1','0','1','1','0','1'],
+      ['0','0','0','0','1','0','0'],
+      ['0','1','1','0','0','0','G']
+    ]
+  };
+
+  let state={screen:'menu',activeIsland:1,stars:0,completed:[],message:'Welcome, explorer!',soundOn:true,musicOn:false,selectedCharacter:'cat',stickerBook:[],unlocked:['cat'],lastChestOpen:0,latestReward:'',memoryDeck:[],memoryPicked:[],memoryBusy:false,shapeGame:{rounds:[],index:0,cheer:''},maze:{grid:[],player:{r:0,c:0},goal:{r:0,c:0},cheer:'',hasKey:false}};
+  const app=document.getElementById('app');
+  const msg=document.getElementById('messageBox');
+  const star=document.getElementById('starCount');
+  const soundBtn=document.getElementById('soundBtn');
+  const musicBtn=document.getElementById('musicBtn');
 
   function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-  function save(){localStorage.setItem('api-safe-save',JSON.stringify({stars:state.stars,completed:state.completed,soundOn:state.soundOn,musicOn:state.musicOn,selectedCharacter:state.selectedCharacter,stickerBook:state.stickerBook,unlocked:state.unlocked,lastChestOpen:state.lastChestOpen,latestReward:state.latestReward}))}
-  function load(){try{const s=JSON.parse(localStorage.getItem('api-safe-save')||'null');if(!s)return;state.stars=s.stars||0;state.completed=s.completed||[];state.soundOn=s.soundOn!==false;state.musicOn=s.musicOn===true;state.selectedCharacter=s.selectedCharacter||'cat';state.stickerBook=s.stickerBook||[];state.unlocked=s.unlocked||['cat'];state.lastChestOpen=s.lastChestOpen||0;state.latestReward=s.latestReward||''}catch(e){}}
+  function save(){localStorage.setItem('pbi-save-v2',JSON.stringify({stars:state.stars,completed:state.completed,soundOn:state.soundOn,musicOn:state.musicOn,selectedCharacter:state.selectedCharacter,stickerBook:state.stickerBook,unlocked:state.unlocked,lastChestOpen:state.lastChestOpen,latestReward:state.latestReward}))}
+  function load(){try{const s=JSON.parse(localStorage.getItem('pbi-save-v2')||'null');if(!s)return;state.stars=s.stars||0;state.completed=s.completed||[];state.soundOn=s.soundOn!==false;state.musicOn=s.musicOn===true;state.selectedCharacter=s.selectedCharacter||'cat';state.stickerBook=s.stickerBook||[];state.unlocked=s.unlocked||['cat'];state.lastChestOpen=s.lastChestOpen||0;state.latestReward=s.latestReward||''}catch(e){}}
   function say(t){state.message=t;msg.textContent=t}
   function currentChar(){return characters.find(c=>c.id===state.selectedCharacter)||characters[0]}
   function isUnlocked(id){return state.unlocked.indexOf(id)!==-1}
-  function updateTop(){star.textContent='⭐ '+state.stars; soundBtn.textContent=state.soundOn?'🔊 Sound On':'🔈 Sound Off'; musicBtn.textContent=state.musicOn?'🎵 Music On':'🎵 Music Off'; unlockByStars()}
-  function unlockByStars(){let changed=false;characters.forEach(c=>{if(!c.chestOnly&&state.stars>=c.unlockStars&&!isUnlocked(c.id)){state.unlocked.push(c.id);state.latestReward=c.emoji+' '+c.name+' joined your team!';changed=true}}); if(changed) save()}
-  function canOpenChest(){return !state.lastChestOpen || (Date.now()-state.lastChestOpen)>=24*60*60*1000}
-  function chestText(){if(canOpenChest()) return 'Tap to open your surprise reward!'; const ms=24*60*60*1000-(Date.now()-state.lastChestOpen); const h=Math.floor(ms/3600000); const m=Math.floor((ms%3600000)/60000); return h+'h '+m+'m until next chest'}
+  function unlockByStars(){let changed=false;characters.forEach(c=>{if(!c.chestOnly&&state.stars>=c.unlockStars&&!isUnlocked(c.id)){state.unlocked.push(c.id);state.latestReward=c.emoji+' '+c.name+' joined your team!';changed=true}});if(changed)save()}
+  function updateTop(){star.textContent='⭐ '+state.stars;soundBtn.textContent=state.soundOn?'🔊 Sound On':'🔈 Sound Off';musicBtn.textContent=state.musicOn?'🎵 Music On':'🎵 Music Off';unlockByStars()}
+  function canOpenChest(){return !state.lastChestOpen||(Date.now()-state.lastChestOpen)>=24*60*60*1000}
+  function chestText(){if(canOpenChest())return 'Tap to open your surprise reward!';const ms=24*60*60*1000-(Date.now()-state.lastChestOpen);const h=Math.floor(ms/3600000);const m=Math.floor((ms%3600000)/60000);return h+'h '+m+'m until next chest'}
 
   let audioCtx=null,bgInt=null;
-  function ctx(){if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); return audioCtx}
-  function beep(f,d,v,t){if(!state.soundOn) return; const c=ctx(),o=c.createOscillator(),g=c.createGain(),n=c.currentTime; o.type=t||'sine'; o.frequency.setValueAtTime(f,n); g.gain.setValueAtTime(v||0.08,n); g.gain.exponentialRampToValueAtTime(0.0001,n+d); o.connect(g); g.connect(c.destination); o.start(n); o.stop(n+d)}
+  function ctx(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();return audioCtx}
+  function beep(f,d,v,t){if(!state.soundOn)return;const c=ctx(),o=c.createOscillator(),g=c.createGain(),n=c.currentTime;o.type=t||'sine';o.frequency.setValueAtTime(f,n);g.gain.setValueAtTime(v||0.08,n);g.gain.exponentialRampToValueAtTime(0.0001,n+d);o.connect(g);g.connect(c.destination);o.start(n);o.stop(n+d)}
   function sound(kind){if(kind==='click'){beep(620,0.08,0.06,'sine');setTimeout(()=>beep(820,0.08,0.04,'triangle'),20)} else if(kind==='wrong'){beep(240,0.12,0.07,'sawtooth');setTimeout(()=>beep(180,0.12,0.05,'sawtooth'),60)} else if(kind==='win'){beep(523,0.08,0.06,'triangle');setTimeout(()=>beep(659,0.08,0.06,'triangle'),80);setTimeout(()=>beep(784,0.16,0.06,'triangle'),160)} else if(kind==='animal'){beep(700,0.06,0.04,'square');setTimeout(()=>beep(900,0.06,0.04,'square'),50)} else if(kind==='maze'){beep(480,0.05,0.04,'sine')}}
-    function startMusic(){if(!state.soundOn||bgInt) return; const notes=[392,440,523,440]; let i=0; bgInt=setInterval(()=>{beep(notes[i%notes.length],0.18,0.02,'triangle'); i++},320)}
-  function stopMusic(){if(bgInt){clearInterval(bgInt); bgInt=null}}
+  function startMusic(){if(!state.soundOn||bgInt)return;const notes=[392,440,523,440];let i=0;bgInt=setInterval(()=>{beep(notes[i%notes.length],0.18,0.02,'triangle');i++},320)}
+  function stopMusic(){if(bgInt){clearInterval(bgInt);bgInt=null}}
 
-  function rewardPuzzle(id){if(state.completed.indexOf(id)===-1){state.stars++; state.completed.push(id); const st=stickers[Math.floor(Math.random()*stickers.length)]; state.stickerBook.push(st); state.latestReward='🎁 New sticker: '+st; say('Nice job! You earned a star and a sticker! ⭐')} else {say('You solved it again! Great job! 🎉')} save(); updateTop(); sound('win');  state.screen='reward'; render()}
-  function openChest(){if(!canOpenChest()){say('Your daily chest is resting. Come back later!'); sound('wrong'); render(); return;} const lion=characters.find(c=>c.chestOnly&&!isUnlocked(c.id)); const r=Math.random(); let text=''; if(lion&&r<0.2){state.unlocked.push(lion.id); text=lion.emoji+' You unlocked '+lion.name+'!'} else if(r<0.6){const add=Math.random()<0.5?2:3; state.stars+=add; text='⭐ You found '+add+' bonus stars!'} else {const st=stickers[Math.floor(Math.random()*stickers.length)]; state.stickerBook.push(st); text='🎁 New sticker: '+st} state.lastChestOpen=Date.now(); state.latestReward=text; unlockByStars(); save(); updateTop(); sound('win');  state.screen='chest'; render()}
+  function rewardPuzzle(id){if(state.completed.indexOf(id)===-1){state.stars++;state.completed.push(id);const st=stickers[Math.floor(Math.random()*stickers.length)];state.stickerBook.push(st);state.latestReward='🎁 New sticker: '+st;say('Nice job! You earned a star and a sticker! ⭐')}else{say('You solved it again! Great job! 🎉')}save();updateTop();sound('win');state.screen='reward';render()}
+  function openChest(){if(!canOpenChest()){say('Your daily chest is resting. Come back later!');sound('wrong');render();return;}const lion=characters.find(c=>c.chestOnly&&!isUnlocked(c.id));const r=Math.random();let text='';if(lion&&r<0.2){state.unlocked.push(lion.id);text=lion.emoji+' You unlocked '+lion.name+'!'}else if(r<0.6){const add=Math.random()<0.5?2:3;state.stars+=add;text='⭐ You found '+add+' bonus stars!'}else{const st=stickers[Math.floor(Math.random()*stickers.length)];state.stickerBook.push(st);text='🎁 New sticker: '+st}state.lastChestOpen=Date.now();state.latestReward=text;unlockByStars();save();updateTop();sound('win');state.screen='chest';render()}
 
-  function selectCharacter(id){if(!isUnlocked(id)) return; state.selectedCharacter=id; save(); sound('click'); render()}
-  function toMap(){state.screen='map'; render()}
-  function resetAll(){state.stars=0;state.completed=[];state.selectedCharacter='cat';state.stickerBook=[];state.unlocked=['cat'];state.lastChestOpen=0;state.latestReward='';state.musicOn=false;stopMusic(); save(); updateTop(); say('Progress reset. New adventure started!'); state.screen='menu'; render()}
-  function enterIsland(id){state.activeIsland=id; state.screen='island'; render()}
-  function backIsland(){state.screen='island'; render()}
+  function selectCharacter(id){if(!isUnlocked(id))return;state.selectedCharacter=id;save();sound('click');render()}
+  function toMap(){state.screen='map';render()}
+  function resetAll(){state.stars=0;state.completed=[];state.selectedCharacter='cat';state.stickerBook=[];state.unlocked=['cat'];state.lastChestOpen=0;state.latestReward='';state.musicOn=false;stopMusic();save();updateTop();say('Progress reset. New adventure started!');state.screen='menu';render()}
+  function enterIsland(id){state.activeIsland=id;state.screen='island';render()}
+  function backIsland(){state.screen='island';render()}
 
-  function startMemory(){const sym=memorySets[state.activeIsland]; state.memoryDeck=shuffle(sym.concat(sym)).map((e,i)=>({id:i,emoji:e,flipped:false,matched:false})); state.memoryPicked=[]; state.memoryBusy=false; state.screen='memory'; render()}
-  function flipMemory(id){sound('animal'); if(state.memoryBusy) return; const c=state.memoryDeck.find(x=>x.id===id); if(!c||c.flipped||c.matched) return; c.flipped=true; state.memoryPicked.push(c); renderMemory(); if(state.memoryPicked.length===2){state.memoryBusy=true; const a=state.memoryPicked[0],b=state.memoryPicked[1]; if(a.emoji===b.emoji){setTimeout(()=>{a.matched=true;b.matched=true; state.memoryPicked=[]; state.memoryBusy=false; renderMemory(); if(state.memoryDeck.every(x=>x.matched)) rewardPuzzle('memory-'+state.activeIsland)},450)} else {setTimeout(()=>{a.flipped=false;b.flipped=false; state.memoryPicked=[]; state.memoryBusy=false; renderMemory()},800)}}}
+  function startMemory(){const sym=memorySets[state.activeIsland];state.memoryDeck=shuffle(sym.concat(sym)).map((e,i)=>({id:i,emoji:e,flipped:false,matched:false}));state.memoryPicked=[];state.memoryBusy=false;state.screen='memory';render()}
+  function flipMemory(id){sound('animal');if(state.memoryBusy)return;const c=state.memoryDeck.find(x=>x.id===id);if(!c||c.flipped||c.matched)return;c.flipped=true;state.memoryPicked.push(c);renderMemory();if(state.memoryPicked.length===2){state.memoryBusy=true;const a=state.memoryPicked[0],b=state.memoryPicked[1];if(a.emoji===b.emoji){setTimeout(()=>{a.matched=true;b.matched=true;state.memoryPicked=[];state.memoryBusy=false;renderMemory();if(state.memoryDeck.every(x=>x.matched))rewardPuzzle('memory-'+state.activeIsland)},450)}else{setTimeout(()=>{a.flipped=false;b.flipped=false;state.memoryPicked=[];state.memoryBusy=false;renderMemory()},800)}}}
 
-  function startShapes(){const count=state.activeIsland===1?3:state.activeIsland===2?4:5; state.shapeGame={rounds:shuffle(shapeRounds).slice(0,count),index:0,cheer:''}; state.screen='shapes'; render()}
-  function pickShape(opt){const cur=state.shapeGame.rounds[state.shapeGame.index]; if(opt===cur.emoji){sound('click');  state.shapeGame.cheer='Great job! 🎉'; renderShapes(); if(state.shapeGame.index+1>=state.shapeGame.rounds.length){setTimeout(()=>rewardPuzzle('shapes-'+state.activeIsland),500)} else {setTimeout(()=>{state.shapeGame.index++; state.shapeGame.cheer=''; renderShapes()},450)}} else {sound('wrong');  state.shapeGame.cheer='Try again! 😊'; renderShapes()}}
+  function startShapes(){const count=state.activeIsland===1?3:state.activeIsland===2?4:5;state.shapeGame={rounds:shuffle(shapeRounds).slice(0,count),index:0,cheer:''};state.screen='shapes';render()}
+  function pickShape(opt){const cur=state.shapeGame.rounds[state.shapeGame.index];if(opt===cur.emoji){sound('click');state.shapeGame.cheer='Great job! 🎉';renderShapes();if(state.shapeGame.index+1>=state.shapeGame.rounds.length){setTimeout(()=>rewardPuzzle('shapes-'+state.activeIsland),500)}else{setTimeout(()=>{state.shapeGame.index++;state.shapeGame.cheer='';renderShapes()},450)}}else{sound('wrong');state.shapeGame.cheer='Try again! 😊';renderShapes()}}
 
-  function startMaze(){const layout=mazes[state.activeIsland].map(r=>r.slice()); let player={r:0,c:0},goal={r:0,c:0}; for(let r=0;r<layout.length;r++){for(let c=0;c<layout[r].length;c++){if(layout[r][c]==='P') player={r,c}; if(layout[r][c]==='G') goal={r,c}}} state.maze={grid:layout,player,goal,cheer:''}; state.screen='maze'; render()}
-  function moveMaze(dr,dc){ sound('maze'); const nr=state.maze.player.r+dr,nc=state.maze.player.c+dc;
-      if(nr<0||nc<0||nr>=state.maze.grid.length||nc>=state.maze.grid[0].length) return;
-      const tile=state.maze.grid[nr][nc];
-      if(tile==='1'){ state.maze.cheer='Oops, that way is blocked!'; renderMaze(); return; }
-      if(tile==='K'){ state.maze.cheer='You found a key! 🔑'; state.hasKey=true; }
-      if(tile==='T'){ state.maze.cheer='Teleport! 🌀';
-        // simple teleport to opposite corner
-        state.maze.player={r:state.maze.grid.length-1-nr,c:state.maze.grid[0].length-1-nc};
-        renderMaze(); return;
+  function startMaze(){
+    const layout=mazes[state.activeIsland].map(r=>r.slice());
+    let player={r:0,c:0},goal={r:0,c:0};
+    for(let r=0;r<layout.length;r++){
+      for(let c=0;c<layout[r].length;c++){
+        if(layout[r][c]==='P')player={r,c};
+        if(layout[r][c]==='G')goal={r,c};
       }
-      state.maze.player={r:nr,c:nc};
+    }
+    state.maze={grid:layout,player,goal,cheer:'',hasKey:false};
+    state.screen='maze';
+    render();
+  }
+  function moveMaze(dr,dc){
+    sound('maze');
+    const nr=state.maze.player.r+dr,nc=state.maze.player.c+dc;
+    if(nr<0||nc<0||nr>=state.maze.grid.length||nc>=state.maze.grid[0].length)return;
+    const tile=state.maze.grid[nr][nc];
+    if(tile==='1'){state.maze.cheer='Oops, that way is blocked!';renderMaze();return;}
+    if(tile==='T'){
+      state.maze.player={r:state.maze.grid.length-1-nr,c:state.maze.grid[0].length-1-nc};
+      state.maze.cheer='Teleport! 🌀';
       renderMaze();
-      if(nr===state.maze.goal.r&&nc===state.maze.goal.c){
-        if(state.hasKey){
-          state.maze.cheer='You used the key and found treasure! 🏆';
-          renderMaze();
-          setTimeout(()=>rewardPuzzle('maze-'+state.activeIsland),600);
-        } else {
-          state.maze.cheer='Find the key first! 🔑';
-          renderMaze();
-        }
+      return;
+    }
+    state.maze.player={r:nr,c:nc};
+    if(tile==='K'){
+      state.maze.hasKey=true;
+      state.maze.grid[nr][nc]='0';
+      state.maze.cheer='You found a key! 🔑';
+    } else {
+      state.maze.cheer='';
+    }
+    if(nr===state.maze.goal.r&&nc===state.maze.goal.c){
+      if(state.maze.hasKey){
+        state.maze.cheer='You used the key and found treasure! 🏆';
+        renderMaze();
+        setTimeout(()=>rewardPuzzle('maze-'+state.activeIsland),600);
+        return;
+      } else {
+        state.maze.cheer='Find the key first! 🔑';
       }
-    }sound('maze'); const nr=state.maze.player.r+dr,nc=state.maze.player.c+dc; if(nr<0||nc<0||nr>=state.maze.grid.length||nc>=state.maze.grid[0].length) return; if(state.maze.grid[nr][nc]==='1'){state.maze.cheer='Oops, that way is blocked!'; renderMaze(); return;} state.maze.player={r:nr,c:nc}; state.maze.cheer=''; renderMaze(); if(nr===state.maze.goal.r&&nc===state.maze.goal.c){state.maze.cheer='You found the treasure! 🏆'; renderMaze(); setTimeout(()=>rewardPuzzle('maze-'+state.activeIsland),600)}}
-
-  function render(){updateTop(); const ch=currentChar();
-    if(state.screen==='menu'){app.innerHTML='<div class="box center"><div class="hero">'+ch.emoji+'🧩🏝️</div><h2>Start Your Island Adventure</h2><p class="muted" style="max-width:650px;margin:12px auto 20px">Pick a buddy, explore islands, solve puzzles, and collect stars and stickers.</p><div class="card" style="max-width:560px;margin:0 auto 18px;background:#fef3c7;cursor:pointer" id="chestCard"><div style="font-size:56px;margin-bottom:8px">📦</div><h3>Daily Reward Chest</h3><p class="muted" style="margin-top:8px">'+chestText()+'</p></div><h3 style="margin-bottom:12px">Choose Your Character</h3><div class="grid">'+characters.map(c=>'<div class="card" data-char="'+c.id+'" style="border:'+(state.selectedCharacter===c.id?'3px solid #2563eb':'3px solid transparent')+';opacity:'+(isUnlocked(c.id)?'1':'0.55')+';cursor:'+(isUnlocked(c.id)?'pointer':'default')+'"><div class="icon">'+c.emoji+'</div><h3>'+c.name+'</h3><p class="muted" style="margin-top:8px">'+(isUnlocked(c.id)?'Ready to play':(c.chestOnly?'Chest reward only':'Unlocks at '+c.unlockStars+' stars'))+'</p></div>').join('')+'</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px"><button id="playBtn">Play Now</button><button class="alt" id="stickersBtn">🎁 Sticker Book</button></div></div>'; document.getElementById('chestCard').onclick=openChest; document.getElementById('playBtn').onclick=toMap; document.getElementById('stickersBtn').onclick=()=>{state.screen='stickers'; render()}; document.querySelectorAll('[data-char]').forEach(el=>el.onclick=()=>selectCharacter(el.getAttribute('data-char'))); return;}
-    if(state.screen==='chest'){app.innerHTML='<div class="box center"><div class="hero">'+ch.emoji+'📦</div><h2>Daily Chest Opened!</h2><p class="muted" style="margin:12px 0 18px">Come back tomorrow for another surprise.</p><div class="card" style="max-width:420px;margin:0 auto 18px;background:#fef3c7"><div style="font-size:54px;margin-bottom:8px">✨</div><h3>Your Reward</h3><p style="font-size:24px;margin-top:10px;font-weight:bold">'+(state.latestReward||'⭐ Bonus reward!')+'</p></div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button id="homeBtn">Back Home</button><button class="alt" id="playBtn2">Play Now</button></div></div>'; document.getElementById('homeBtn').onclick=()=>{state.screen='menu'; render()}; document.getElementById('playBtn2').onclick=toMap; return;}
-    if(state.screen==='reward'){app.innerHTML='<div class="box center"><div class="hero">'+ch.emoji+'</div><h2>You Did It!</h2><p class="muted" style="margin:12px 0 18px">Your buddy is proud of you.</p><div class="card" style="max-width:420px;margin:0 auto 18px;background:#fef3c7"><div style="font-size:54px;margin-bottom:8px">🎁</div><h3>New Reward Unlocked</h3><p style="font-size:24px;margin-top:10px;font-weight:bold">'+(state.latestReward||'⭐ Great job!')+'</p></div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button id="keepBtn">Keep Playing</button><button class="alt" id="bookBtn">Open Sticker Book</button></div></div>'; document.getElementById('keepBtn').onclick=toMap; document.getElementById('bookBtn').onclick=()=>{state.screen='stickers'; render()}; return;}
-    if(state.screen==='stickers'){app.innerHTML='<div class="box center"><div class="hero">'+ch.emoji+'🎁</div><h2>Sticker Book</h2><p class="muted" style="margin:12px 0 18px">Collect stickers by solving puzzles.</p><div class="grid">'+(state.stickerBook.length?state.stickerBook.map(s=>'<div class="card" style="background:#ecfeff"><div style="font-size:38px;margin-bottom:8px">✨</div><h3>'+s+'</h3></div>').join(''):'<div class="card" style="grid-column:1/-1"><h3>No stickers yet</h3><p class="muted" style="margin-top:8px">Solve a puzzle to win your first sticker!</p></div>')+'</div><div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button id="playMoreBtn">Play More</button><button class="alt" id="homeBackBtn">Back Home</button></div></div>'; document.getElementById('playMoreBtn').onclick=toMap; document.getElementById('homeBackBtn').onclick=()=>{state.screen='menu'; render()}; return;}
-    if(state.screen==='map'){app.innerHTML='<div class="map-wrap">'+
-      '<h2 class="map-title">Adventure Map</h2>'+
-      '<p class="map-sub">Tap an island to explore</p>'+
-      '<div class="path-dot" style="left:18%;top:58%"></div>'+
-      '<div class="path-dot" style="left:29%;top:50%"></div>'+
-      '<div class="path-dot" style="left:40%;top:42%"></div>'+
-      '<div class="path-dot" style="left:52%;top:42%"></div>'+
-      '<div class="path-dot" style="left:63%;top:48%"></div>'+
-      '<div class="path-dot" style="left:75%;top:57%"></div>'+
-      islands.map(i=>'<div class="island-node '+(state.stars>=i.starsNeeded?'':'locked')+'" data-island="'+i.id+'" style="'+(i.id===1?'left:6%;top:50%':i.id===2?'left:39%;top:28%':'right:6%;top:50%')+'">'+
-        '<div class="icon" style="margin-bottom:2px">'+i.icon+'</div>'+
-        '<h3>'+i.name+'</h3>'+
-        '<div class="muted" style="margin-top:4px">'+(state.stars>=i.starsNeeded?'Ready to play':'Needs '+i.starsNeeded+' stars')+'</div>'+
-        '<div class="node-badge">'+(state.stars>=i.starsNeeded?'ENTER':'LOCKED')+'</div>'+
-      '</div>').join('')+
-    '</div>'; document.querySelectorAll('[data-island]').forEach(el=>el.onclick=()=>{const id=Number(el.getAttribute('data-island')); if(state.stars>=islands.find(i=>i.id===id).starsNeeded) enterIsland(id); else sound('wrong')}); return;}
-    if(state.screen==='island'){const island=islands.find(i=>i.id===state.activeIsland); const memDone=state.completed.includes('memory-'+state.activeIsland); const shapeDone=state.completed.includes('shapes-'+state.activeIsland); const mazeDone=state.completed.includes('maze-'+state.activeIsland); app.innerHTML='<div class="box center"><div class="hero">'+island.icon+'</div><h2>'+island.name+' Island</h2><p class="muted" style="margin:10px 0 24px">Choose a puzzle to play</p><div class="puzzles">'+
-      '<div class="tile memory '+(memDone?'done':'')+'" id="memTile">'+(memDone?'<div class="done-tag">DONE ✓</div>':'')+'<div class="big">🧠</div><h3>Memory Match</h3><p class="muted" style="margin-top:8px">Flip cards and find all the pairs.</p></div>'+
-      '<div class="tile shape '+(shapeDone?'done':'')+'" id="shapeTile">'+(shapeDone?'<div class="done-tag">DONE ✓</div>':'')+'<div class="big">🔎</div><h3>Shape Finder</h3><p class="muted" style="margin-top:8px">Tap the matching shape as fast as you can.</p></div>'+
-      '<div class="tile maze '+(mazeDone?'done':'')+'" id="mazeTile">'+(mazeDone?'<div class="done-tag">DONE ✓</div>':'')+'<div class="big">🌀</div><h3>Mini Maze</h3><p class="muted" style="margin-top:8px">Move through the maze to reach the treasure.</p></div>'+
-    '</div><div style="margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="alt" id="backMapBtn">Back to Map</button></div></div>'; document.getElementById('memTile').onclick=startMemory; document.getElementById('shapeTile').onclick=startShapes; document.getElementById('mazeTile').onclick=startMaze; document.getElementById('backMapBtn').onclick=toMap; return;}
-    if(state.screen==='memory'){renderMemory(); return;} if(state.screen==='shapes'){renderShapes(); return;} if(state.screen==='maze'){renderMaze(); return;}
+    }
+    renderMaze();
   }
 
-  function renderMemory(){let cards=state.memoryDeck.map(c=>'<button class="memory-card '+((c.flipped||c.matched)?'on':'')+'" data-card="'+c.id+'">'+((c.flipped||c.matched)?c.emoji:'❓')+'</button>').join(''); app.innerHTML='<div class="box"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px"><div><h2>Memory Match</h2><p class="muted">Find all the pairs</p></div><button class="alt" id="backBtn">Back</button></div><div class="memory-board">'+cards+'</div></div>'; document.getElementById('backBtn').onclick=backIsland; document.querySelectorAll('[data-card]').forEach(el=>el.onclick=()=>flipMemory(Number(el.getAttribute('data-card'))))}
-  function renderShapes(){const cur=state.shapeGame.rounds[state.shapeGame.index], opts=shuffle(cur.options).map(o=>'<button class="shape-btn" data-opt="'+o+'">'+o+'</button>').join(''); app.innerHTML='<div class="box center"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px;text-align:left"><div><h2>Shape Finder</h2><p class="muted">Round '+(state.shapeGame.index+1)+' of '+state.shapeGame.rounds.length+'</p></div><button class="alt" id="backBtn">Back</button></div><p style="font-size:20px;margin-bottom:10px">Tap the matching shape:</p><div style="font-size:74px;margin-bottom:18px">'+cur.emoji+'</div><div class="shape-grid">'+opts+'</div><div class="status">'+state.shapeGame.cheer+'</div></div>'; document.getElementById('backBtn').onclick=backIsland; document.querySelectorAll('[data-opt]').forEach(el=>el.onclick=()=>pickShape(el.getAttribute('data-opt')))}
-  function renderMaze(){ let cells=''; state.maze.grid.forEach((row,r)=>row.forEach((cell,c)=>{ let cls='',icon='';
-      if(cell==='1') cls='wall';
-      if(cell==='K'){cls='goal'; icon='🔑'}
-      if(cell==='T'){cls='path'; icon='🌀'}
-      if(r===state.maze.goal.r&&c===state.maze.goal.c){cls='goal'; icon='🏆'}
-      if(r===state.maze.player.r&&c===state.maze.player.c){cls='player'; icon='😀'}
-      cells+='<div class="cell '+cls+'">'+icon+'</div>'
-    }));
-    app.innerHTML=let cells=''; state.maze.grid.forEach((row,r)=>row.forEach((cell,c)=>{let cls='',icon=''; if(cell==='1') cls='wall'; if(r===state.maze.goal.r&&c===state.maze.goal.c){cls='goal'; icon='🏆'} if(r===state.maze.player.r&&c===state.maze.player.c){cls='player'; icon='😀'} cells+='<div class="cell '+cls+'">'+icon+'</div>'})); app.innerHTML='<div class="box center"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px;text-align:left"><div><h2>Mini Maze</h2><p class="muted">Reach the treasure chest</p></div><button class="alt" id="backBtn">Back</button></div><div class="maze-board">'+cells+'</div><div class="maze-controls" style="max-width:260px"><div></div><button id="upBtn">⬆️</button><div></div><button id="leftBtn">⬅️</button><button id="downBtn">⬇️</button><button id="rightBtn">➡️</button></div><div class="status">'+state.maze.cheer+'</div></div>'; document.getElementById('backBtn').onclick=backIsland; document.getElementById('upBtn').onclick=()=>moveMaze(-1,0); document.getElementById('leftBtn').onclick=()=>moveMaze(0,-1); document.getElementById('downBtn').onclick=()=>moveMaze(1,0); document.getElementById('rightBtn').onclick=()=>moveMaze(0,1)}
+  function render(){
+    updateTop();
+    const ch=currentChar();
+    if(state.screen==='menu'){
+      app.innerHTML='<div class="box center"><div class="hero">'+ch.emoji+'🧩🏝️</div><h2>Start Your Island Adventure</h2><p class="muted" style="max-width:650px;margin:12px auto 20px">Pick a buddy, explore islands, solve puzzles, and collect stars and stickers.</p><div class="card" style="max-width:560px;margin:0 auto 18px;background:#fef3c7;cursor:pointer" id="chestCard"><div style="font-size:56px;margin-bottom:8px">📦</div><h3>Daily Reward Chest</h3><p class="muted" style="margin-top:8px">'+chestText()+'</p></div><h3 style="margin-bottom:12px">Choose Your Character</h3><div class="grid">'+characters.map(c=>'<div class="card" data-char="'+c.id+'" style="border:'+(state.selectedCharacter===c.id?'3px solid #2563eb':'3px solid transparent')+';opacity:'+(isUnlocked(c.id)?'1':'0.55')+';cursor:'+(isUnlocked(c.id)?'pointer':'default')+'"><div class="icon">'+c.emoji+'</div><h3>'+c.name+'</h3><p class="muted" style="margin-top:8px">'+(isUnlocked(c.id)?'Ready to play':(c.chestOnly?'Chest reward only':'Unlocks at '+c.unlockStars+' stars'))+'</p></div>').join('')+'</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px"><button id="playBtn">Play Now</button><button class="alt" id="stickersBtn">🎁 Sticker Book</button></div></div>';
+      document.getElementById('chestCard').onclick=openChest;
+      document.getElementById('playBtn').onclick=toMap;
+      document.getElementById('stickersBtn').onclick=()=>{state.screen='stickers';render()};
+      document.querySelectorAll('[data-char]').forEach(el=>el.onclick=()=>selectCharacter(el.getAttribute('data-char')));
+      return;
+    }
+    if(state.screen==='chest'){
+      app.innerHTML='<div class="box center"><div class="hero">'+ch.emoji+'📦</div><h2>Daily Chest Opened!</h2><p class="muted" style="margin:12px 0 18px">Come back tomorrow for another surprise.</p><div class="card" style="max-width:420px;margin:0 auto 18px;background:#fef3c7"><div style="font-size:54px;margin-bottom:8px">✨</div><h3>Your Reward</h3><p style="font-size:24px;margin-top:10px;font-weight:bold">'+(state.latestReward||'⭐ Bonus reward!')+'</p></div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button id="homeBtn">Back Home</button><button class="alt" id="playBtn2">Play Now</button></div></div>';
+      document.getElementById('homeBtn').onclick=()=>{state.screen='menu';render()};
+      document.getElementById('playBtn2').onclick=toMap;
+      return;
+    }
+    if(state.screen==='reward'){
+      app.innerHTML='<div class="box center"><div class="hero">'+ch.emoji+'</div><h2>You Did It!</h2><p class="muted" style="margin:12px 0 18px">Your buddy is proud of you.</p><div class="card" style="max-width:420px;margin:0 auto 18px;background:#fef3c7"><div style="font-size:54px;margin-bottom:8px">🎁</div><h3>New Reward Unlocked</h3><p style="font-size:24px;margin-top:10px;font-weight:bold">'+(state.latestReward||'⭐ Great job!')+'</p></div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button id="keepBtn">Keep Playing</button><button class="alt" id="bookBtn">Open Sticker Book</button></div></div>';
+      document.getElementById('keepBtn').onclick=toMap;
+      document.getElementById('bookBtn').onclick=()=>{state.screen='stickers';render()};
+      return;
+    }
+    if(state.screen==='stickers'){
+      app.innerHTML='<div class="box center"><div class="hero">'+ch.emoji+'🎁</div><h2>Sticker Book</h2><p class="muted" style="margin:12px 0 18px">Collect stickers by solving puzzles.</p><div class="grid">'+(state.stickerBook.length?state.stickerBook.map(s=>'<div class="card" style="background:#ecfeff"><div style="font-size:38px;margin-bottom:8px">✨</div><h3>'+s+'</h3></div>').join(''):'<div class="card" style="grid-column:1/-1"><h3>No stickers yet</h3><p class="muted" style="margin-top:8px">Solve a puzzle to win your first sticker!</p></div>')+'</div><div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button id="playMoreBtn">Play More</button><button class="alt" id="homeBackBtn">Back Home</button></div></div>';
+      document.getElementById('playMoreBtn').onclick=toMap;
+      document.getElementById('homeBackBtn').onclick=()=>{state.screen='menu';render()};
+      return;
+    }
+    if(state.screen==='map'){
+      app.innerHTML='<div class="map-wrap"><h2 class="map-title">Adventure Map</h2><p class="map-sub">Tap an island to explore</p><div class="path-dot" style="left:18%;top:58%"></div><div class="path-dot" style="left:29%;top:50%"></div><div class="path-dot" style="left:40%;top:42%"></div><div class="path-dot" style="left:52%;top:42%"></div><div class="path-dot" style="left:63%;top:48%"></div><div class="path-dot" style="left:75%;top:57%"></div>'+islands.map(i=>'<div class="island-node '+(state.stars>=i.starsNeeded?'':'locked')+'" data-island="'+i.id+'" style="'+(i.id===1?'left:6%;top:50%':i.id===2?'left:39%;top:28%':'right:6%;top:50%')+'"><div class="icon" style="margin-bottom:2px">'+i.icon+'</div><h3>'+i.name+'</h3><div class="muted" style="margin-top:4px">'+(state.stars>=i.starsNeeded?'Ready to play':'Needs '+i.starsNeeded+' stars')+'</div><div class="node-badge">'+(state.stars>=i.starsNeeded?'ENTER':'LOCKED')+'</div></div>').join('')+'</div>';
+      document.querySelectorAll('[data-island]').forEach(el=>el.onclick=()=>{const id=Number(el.getAttribute('data-island'));const isl=islands.find(i=>i.id===id);if(state.stars>=isl.starsNeeded)enterIsland(id);else sound('wrong')});
+      return;
+    }
+    if(state.screen==='island'){
+      const island=islands.find(i=>i.id===state.activeIsland);
+      const memDone=state.completed.includes('memory-'+state.activeIsland);
+      const shapeDone=state.completed.includes('shapes-'+state.activeIsland);
+      const mazeDone=state.completed.includes('maze-'+state.activeIsland);
+      app.innerHTML='<div class="box center"><div class="hero">'+island.icon+'</div><h2>'+island.name+' Island</h2><p class="muted" style="margin:10px 0 24px">Choose a puzzle to play</p><div class="puzzles"><div class="tile memory '+(memDone?'done':'')+'" id="memTile">'+(memDone?'<div class="done-tag">DONE ✓</div>':'')+'<div class="big">🧠</div><h3>Memory Match</h3><p class="muted" style="margin-top:8px">Flip cards and find all the pairs.</p></div><div class="tile shape '+(shapeDone?'done':'')+'" id="shapeTile">'+(shapeDone?'<div class="done-tag">DONE ✓</div>':'')+'<div class="big">🔎</div><h3>Shape Finder</h3><p class="muted" style="margin-top:8px">Tap the matching shape as fast as you can.</p></div><div class="tile maze '+(mazeDone?'done':'')+'" id="mazeTile">'+(mazeDone?'<div class="done-tag">DONE ✓</div>':'')+'<div class="big">🌀</div><h3>Tricky Maze</h3><p class="muted" style="margin-top:8px">Find the key, use teleports, and reach treasure.</p></div></div><div style="margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="alt" id="backMapBtn">Back to Map</button></div></div>';
+      document.getElementById('memTile').onclick=startMemory;
+      document.getElementById('shapeTile').onclick=startShapes;
+      document.getElementById('mazeTile').onclick=startMaze;
+      document.getElementById('backMapBtn').onclick=toMap;
+      return;
+    }
+    if(state.screen==='memory'){renderMemory();return}
+    if(state.screen==='shapes'){renderShapes();return}
+    if(state.screen==='maze'){renderMaze();return}
+  }
 
-  document.getElementById('mapBtn').onclick=toMap; document.getElementById('resetBtn').onclick=resetAll; soundBtn.onclick=()=>{state.soundOn=!state.soundOn; if(!state.soundOn){state.musicOn=false;stopMusic()} else sound('click'); save(); render()}; musicBtn.onclick=()=>{state.musicOn=!state.musicOn; if(state.musicOn&&state.soundOn){startMusic(); sound('click')} else stopMusic(); save(); render()};
-  load(); updateTop(); if(state.musicOn&&state.soundOn) setTimeout(startMusic,300); render();
+  function renderMemory(){
+    let cards=state.memoryDeck.map(c=>'<button class="memory-card '+((c.flipped||c.matched)?'on':'')+'" data-card="'+c.id+'">'+((c.flipped||c.matched)?c.emoji:'❓')+'</button>').join('');
+    app.innerHTML='<div class="box"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px"><div><h2>Memory Match</h2><p class="muted">Find all the pairs</p></div><button class="alt" id="backBtn">Back</button></div><div class="memory-board">'+cards+'</div></div>';
+    document.getElementById('backBtn').onclick=backIsland;
+    document.querySelectorAll('[data-card]').forEach(el=>el.onclick=()=>flipMemory(Number(el.getAttribute('data-card'))));
+  }
+  function renderShapes(){
+    const cur=state.shapeGame.rounds[state.shapeGame.index];
+    const opts=shuffle(cur.options).map(o=>'<button class="shape-btn" data-opt="'+o+'">'+o+'</button>').join('');
+    app.innerHTML='<div class="box center"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px;text-align:left"><div><h2>Shape Finder</h2><p class="muted">Round '+(state.shapeGame.index+1)+' of '+state.shapeGame.rounds.length+'</p></div><button class="alt" id="backBtn">Back</button></div><p style="font-size:20px;margin-bottom:10px">Tap the matching shape:</p><div style="font-size:74px;margin-bottom:18px">'+cur.emoji+'</div><div class="shape-grid">'+opts+'</div><div class="status">'+state.shapeGame.cheer+'</div></div>';
+    document.getElementById('backBtn').onclick=backIsland;
+    document.querySelectorAll('[data-opt]').forEach(el=>el.onclick=()=>pickShape(el.getAttribute('data-opt')));
+  }
+  function renderMaze(){
+    let cells='';
+    state.maze.grid.forEach((row,r)=>row.forEach((cell,c)=>{
+      let cls='',icon='';
+      if(cell==='1')cls='wall';
+      if(cell==='K'){cls='key';icon='🔑'}
+      if(cell==='T'){cls='tele';icon='🌀'}
+      if(r===state.maze.goal.r&&c===state.maze.goal.c){cls='goal';icon='🏆'}
+      if(r===state.maze.player.r&&c===state.maze.player.c){cls='player';icon='😀'}
+      cells+='<div class="cell '+cls+'">'+icon+'</div>';
+    }));
+    app.innerHTML='<div class="box center"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px;text-align:left"><div><h2>Tricky Maze</h2><p class="muted">Find the key, then reach the treasure</p></div><button class="alt" id="backBtn">Back</button></div><div class="maze-board">'+cells+'</div><div class="maze-hint">🔑 Grab the key first. 🌀 Teleports jump you across the map.</div><div class="maze-controls" style="max-width:260px"><div></div><button id="upBtn">⬆️</button><div></div><button id="leftBtn">⬅️</button><button id="downBtn">⬇️</button><button id="rightBtn">➡️</button></div><div class="status">'+state.maze.cheer+'</div></div>';
+    document.getElementById('backBtn').onclick=backIsland;
+    document.getElementById('upBtn').onclick=()=>moveMaze(-1,0);
+    document.getElementById('leftBtn').onclick=()=>moveMaze(0,-1);
+    document.getElementById('downBtn').onclick=()=>moveMaze(1,0);
+    document.getElementById('rightBtn').onclick=()=>moveMaze(0,1);
+  }
+
+  document.getElementById('mapBtn').onclick=toMap;
+  document.getElementById('resetBtn').onclick=resetAll;
+  soundBtn.onclick=()=>{state.soundOn=!state.soundOn;if(!state.soundOn){state.musicOn=false;stopMusic()}else sound('click');save();render()};
+  musicBtn.onclick=()=>{state.musicOn=!state.musicOn;if(state.musicOn&&state.soundOn){startMusic();sound('click')}else stopMusic();save();render()};
+
+  load();
+  updateTop();
+  if(state.musicOn&&state.soundOn)setTimeout(startMusic,300);
+  render();
 })();
 </script>
 </body>
