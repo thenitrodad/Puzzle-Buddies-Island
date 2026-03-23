@@ -128,7 +128,7 @@
     ]
   };
 
-  let state={screen:'menu',activeIsland:1,stars:0,completed:[],message:'Welcome, explorer!',soundOn:true,musicOn:false,selectedCharacter:'cat',stickerBook:[],unlocked:['cat'],lastChestOpen:0,latestReward:'',memoryDeck:[],memoryPicked:[],memoryBusy:false,shapeGame:{rounds:[],index:0,cheer:''},maze:{grid:[],player:{r:0,c:0},goal:{r:0,c:0},cheer:'',hasKey:false}};
+  let state={screen:'menu',activeIsland:1,stars:0,completed:[],message:'Welcome, explorer!',soundOn:true,musicOn:false,selectedCharacter:'cat',stickerBook:[],unlocked:['cat'],lastChestOpen:0,latestReward:'',memoryDeck:[],memoryPicked:[],memoryBusy:false,shapeGame:{rounds:[],index:0,cheer:''},maze:{grid:[],player:{r:0,c:0},goal:{r:0,c:0},cheer:'',hasKey:false,starsCollected:0,footprints:[]}};
   const app=document.getElementById('app');
   const msg=document.getElementById('messageBox');
   const star=document.getElementById('starCount');
@@ -177,7 +177,12 @@
         if(layout[r][c]==='G')goal={r,c};
       }
     }
-    state.maze={grid:layout,player,goal,cheer:'',hasKey:false};
+    // place collectible stars
+    if(state.activeIsland===1){layout[2][2]='S';layout[4][5]='S'}
+    if(state.activeIsland===2){layout[1][5]='S';layout[5][1]='S';layout[3][6]='S'}
+    if(state.activeIsland===3){layout[0][3]='S';layout[5][5]='S';layout[6][0]='S'}
+
+    state.maze={grid:layout,player,goal,cheer:'',hasKey:false,starsCollected:0,footprints:[`${player.r},${player.c}`]};
     state.screen='maze';
     render();
   }
@@ -187,23 +192,38 @@
     if(nr<0||nc<0||nr>=state.maze.grid.length||nc>=state.maze.grid[0].length)return;
     const tile=state.maze.grid[nr][nc];
     if(tile==='1'){state.maze.cheer='Oops, that way is blocked!';renderMaze();return;}
+
     if(tile==='T'){
       state.maze.player={r:state.maze.grid.length-1-nr,c:state.maze.grid[0].length-1-nc};
       state.maze.cheer='Teleport! 🌀';
+      const tp=`${state.maze.player.r},${state.maze.player.c}`;
+      if(!state.maze.footprints.includes(tp)) state.maze.footprints.push(tp);
       renderMaze();
       return;
     }
+
     state.maze.player={r:nr,c:nc};
+    const step=`${nr},${nc}`;
+    if(!state.maze.footprints.includes(step)) state.maze.footprints.push(step);
+
     if(tile==='K'){
       state.maze.hasKey=true;
       state.maze.grid[nr][nc]='0';
       state.maze.cheer='You found a key! 🔑';
+    } else if(tile==='S'){
+      state.maze.starsCollected++;
+      state.maze.grid[nr][nc]='0';
+      state.maze.cheer='You found a star! ⭐';
     } else {
       state.maze.cheer='';
     }
+
     if(nr===state.maze.goal.r&&nc===state.maze.goal.c){
       if(state.maze.hasKey){
         state.maze.cheer='You used the key and found treasure! 🏆';
+        state.stars += state.maze.starsCollected;
+        save();
+        updateTop();
         renderMaze();
         setTimeout(()=>rewardPuzzle('maze-'+state.activeIsland),600);
         return;
@@ -285,11 +305,19 @@
       if(cell==='1')cls='wall';
       if(cell==='K'){cls='key';icon='🔑'}
       if(cell==='T'){cls='tele';icon='🌀'}
+      if(cell==='S'){icon='⭐'}
+
+      // footprints
+      if(state.maze.footprints.includes(`${r},${c}`) && !icon && cell!=='1') icon='👣';
+
       if(r===state.maze.goal.r&&c===state.maze.goal.c){cls='goal';icon='🏆'}
       if(r===state.maze.player.r&&c===state.maze.player.c){cls='player';icon='😀'}
+
       cells+='<div class="cell '+cls+'">'+icon+'</div>';
     }));
-    app.innerHTML='<div class="box center"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px;text-align:left"><div><h2>Tricky Maze</h2><p class="muted">Find the key, then reach the treasure</p></div><button class="alt" id="backBtn">Back</button></div><div class="maze-board">'+cells+'</div><div class="maze-hint">🔑 Grab the key first. 🌀 Teleports jump you across the map.</div><div class="maze-controls" style="max-width:260px"><div></div><button id="upBtn">⬆️</button><div></div><button id="leftBtn">⬅️</button><button id="downBtn">⬇️</button><button id="rightBtn">➡️</button></div><div class="status">'+state.maze.cheer+'</div></div>';
+
+    app.innerHTML='<div class="box center"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px;text-align:left"><div><h2>Tricky Maze</h2><p class="muted">Collect stars, grab the key, reach treasure</p></div><button class="alt" id="backBtn">Back</button></div><div class="maze-board">'+cells+'</div><div class="maze-hint">⭐ Collect stars • 🔑 Key required • 👣 Shows your path</div><div class="maze-hint" style="font-weight:bold">Stars Collected: '+state.maze.starsCollected+'</div><div class="maze-controls" style="max-width:260px"><div></div><button id="upBtn">⬆️</button><div></div><button id="leftBtn">⬅️</button><button id="downBtn">⬇️</button><button id="rightBtn">➡️</button></div><div class="status">'+state.maze.cheer+'</div></div>';
+
     document.getElementById('backBtn').onclick=backIsland;
     document.getElementById('upBtn').onclick=()=>moveMaze(-1,0);
     document.getElementById('leftBtn').onclick=()=>moveMaze(0,-1);
