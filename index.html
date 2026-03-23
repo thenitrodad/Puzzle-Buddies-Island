@@ -46,12 +46,17 @@
     .shape-grid,.maze-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:520px;margin:0 auto}
     .shape-btn{background:#d1fae5;border-radius:20px;padding:22px;font-size:46px;color:#111827;box-shadow:0 8px 18px rgba(0,0,0,.08)}
     .maze-board{display:grid;grid-template-columns:repeat(7,52px);gap:8px;justify-content:center;margin:16px 0;padding:16px;border-radius:24px;background:linear-gradient(180deg,#dbeafe,#eef9ff)}
+    .maze-board.beach{background:linear-gradient(180deg,#dbeafe,#fef3c7)}
+    .maze-board.jungle{background:linear-gradient(180deg,#dcfce7,#bbf7d0)}
+    .maze-board.lava{background:linear-gradient(180deg,#fecaca,#fdba74)}
     .cell{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:#e0f2fe;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
     .wall{background:linear-gradient(180deg,#475569,#334155)}
     .goal{background:linear-gradient(180deg,#86efac,#4ade80)}
     .player{background:linear-gradient(180deg,#fde68a,#fbbf24)}
     .tele{background:linear-gradient(180deg,#c4b5fd,#8b5cf6)}
     .key{background:linear-gradient(180deg,#fde68a,#f59e0b)}
+    .starcell{background:linear-gradient(180deg,#fef08a,#facc15)}
+    .foot{background:linear-gradient(180deg,#e9d5ff,#c4b5fd)}
     .status{min-height:24px;margin-top:14px;font-weight:bold}
     .maze-hint{margin-top:8px;color:#64748b;font-size:14px}
     @media(max-width:640px){.maze-board{grid-template-columns:repeat(7,40px);gap:6px;padding:10px}.cell{width:40px;height:40px;font-size:20px}.memory-card{font-size:28px}}
@@ -305,10 +310,9 @@
       if(cell==='1')cls='wall';
       if(cell==='K'){cls='key';icon='🔑'}
       if(cell==='T'){cls='tele';icon='🌀'}
-      if(cell==='S'){icon='⭐'}
+      if(cell==='S'){cls='starcell';icon='⭐'}
 
-      // footprints
-      if(state.maze.footprints.includes(`${r},${c}`) && !icon && cell!=='1') icon='👣';
+      if(state.maze.footprints.includes(`${r},${c}`) && !icon && cell!=='1') { cls='foot'; icon='👣'; }
 
       if(r===state.maze.goal.r&&c===state.maze.goal.c){cls='goal';icon='🏆'}
       if(r===state.maze.player.r&&c===state.maze.player.c){cls='player';icon='😀'}
@@ -316,7 +320,11 @@
       cells+='<div class="cell '+cls+'">'+icon+'</div>';
     }));
 
-    app.innerHTML='<div class="box center"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px;text-align:left"><div><h2>Tricky Maze</h2><p class="muted">Collect stars, grab the key, reach treasure</p></div><button class="alt" id="backBtn">Back</button></div><div class="maze-board">'+cells+'</div><div class="maze-hint">⭐ Collect stars • 🔑 Key required • 👣 Shows your path</div><div class="maze-hint" style="font-weight:bold">Stars Collected: '+state.maze.starsCollected+'</div><div class="maze-controls" style="max-width:260px"><div></div><button id="upBtn">⬆️</button><div></div><button id="leftBtn">⬅️</button><button id="downBtn">⬇️</button><button id="rightBtn">➡️</button></div><div class="status">'+state.maze.cheer+'</div></div>';
+    const themeName=state.activeIsland===1?'Beach':state.activeIsland===2?'Jungle':'Volcano';
+    const themeClass=state.activeIsland===1?'beach':state.activeIsland===2?'jungle':'lava';
+    const themeHint=state.activeIsland===1?'Easy sandy paths with hidden stars.':state.activeIsland===2?'Leafy jungle turns and tricky routes.':'Hot lava paths with the hardest twists.';
+
+    app.innerHTML='<div class="box center"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px;text-align:left"><div><h2>'+themeName+' Maze</h2><p class="muted">Collect stars, grab the key, reach treasure</p></div><button class="alt" id="backBtn">Back</button></div><div class="maze-board '+themeClass+'">'+cells+'</div><div class="maze-hint">'+themeHint+'</div><div class="maze-hint">⭐ Collect stars • 🔑 Key required • 🌀 Teleports • 👣 Shows your path</div><div class="maze-hint" style="font-weight:bold">Stars Collected: '+state.maze.starsCollected+'</div><div class="maze-controls" style="max-width:260px"><div></div><button id="upBtn">⬆️</button><div></div><button id="leftBtn">⬅️</button><button id="downBtn">⬇️</button><button id="rightBtn">➡️</button></div><div class="status">'+state.maze.cheer+'</div></div>';
 
     document.getElementById('backBtn').onclick=backIsland;
     document.getElementById('upBtn').onclick=()=>moveMaze(-1,0);
