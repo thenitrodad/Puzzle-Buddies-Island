@@ -2,7 +2,831 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="vi<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Puzzle Buddies Island</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(#bfe8ff,#e8fff7,#fff8dc);
+      color: #1f2937;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 16px; }
+    .box,.card {
+      background: rgba(255,255,255,.95);
+      border-radius: 22px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+    }
+    .box { padding: 16px; margin-bottom: 16px; }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      position: relative;
+    }
+    .stars {
+      background: #fef3c7;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-weight: bold;
+    }
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 12px 18px;
+      font-size: 16px;
+      background: #2563eb;
+      color: #fff;
+      cursor: pointer;
+    }
+    button.alt {
+      background: #fff;
+      color: #1f2937;
+      border: 1px solid #cbd5e1;
+    }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .center { text-align: center; }
+    .hero { font-size: 58px; margin-bottom: 10px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
+      gap: 14px;
+    }
+    .card { padding: 18px; text-align: center; }
+    .icon { font-size: 54px; margin-bottom: 8px; }
+    .muted { color: #64748b; }
+    .puzzles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 14px;
+    }
+    .tile {
+      padding: 20px;
+      border-radius: 22px;
+      text-align: left;
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      cursor: pointer;
+      position: relative;
+      transition: transform .18s ease, opacity .18s ease;
+    }
+    .tile:hover { transform: translateY(-2px); }
+    .tile.done { opacity: .55; filter: saturate(.75); }
+    .done-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #22c55e;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .memory { background: linear-gradient(135deg,#dbeafe,#bfdbfe); }
+    .shape { background: linear-gradient(135deg,#d1fae5,#a7f3d0); }
+    .maze { background: linear-gradient(135deg,#fde68a,#fdba74); }
+    .big { font-size: 40px; margin-bottom: 8px; }
+
+    .menu-wrap { position: relative; }
+    .menu-dropdown {
+      position: absolute;
+      top: 52px;
+      right: 0;
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.12);
+      min-width: 180px;
+      padding: 8px;
+      display: none;
+      z-index: 50;
+    }
+    .menu-dropdown.show { display: block; }
+    .menu-item {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      color: #1f2937;
+      border: none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .menu-item:hover { background: #eff6ff; }
+
+    .memory-board {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 10px;
+    }
+    .memory-card {
+      aspect-ratio: 1/1;
+      border-radius: 18px;
+      font-size: 34px;
+      background: #7dd3fc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .memory-card.on { background: #fde68a; }
+
+    .shape-grid,.maze-controls {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 12px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .shape-btn {
+      background: #d1fae5;
+      border-radius: 20px;
+      padding: 22px;
+      font-size: 46px;
+      color: #111827;
+      box-shadow: 0 8px 18px rgba(0,0,0,.08);
+    }
+
+    .maze-board {
+      display: grid;
+      grid-template-columns: repeat(7,52px);
+      gap: 8px;
+      justify-content: center;
+      margin: 16px 0;
+      padding: 16px;
+      border-radius: 24px;
+      background: linear-gradient(180deg,#dbeafe,#eef9ff);
+    }
+    .maze-board.beach { background: linear-gradient(180deg,#dbeafe,#fef3c7); }
+    .maze-board.jungle { background: linear-gradient(180deg,#dcfce7,#bbf7d0); }
+    .maze-board.lava { background: linear-gradient(180deg,#fecaca,#fdba74); }
+
+    .cell {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      background: #e0f2fe;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+    }
+    .wall { background: linear-gradient(180deg,#475569,#334155); }
+    .goal { background: linear-gradient(180deg,#86efac,#4ade80); }
+    .player { background: linear-gradient(180deg,#fde68a,#fbbf24); }
+    .tele { background: linear-gradient(180deg,#c4b5fd,#8b5cf6); }
+    .key { background: linear-gradient(180deg,#fde68a,#f59e0b); }
+    .starcell { background: linear-gradient(180deg,#fef08a,#facc15); }
+    .foot { background: linear-gradient(180deg,#e9d5ff,#c4b5fd); }
+    .status { min-height: 24px; margin-top: 14px; font-weight: bold; }
+    .maze-hint { margin-top: 8px; color: #64748b; font-size: 14px; }
+
+    .island-node {
+      padding: 14px;
+      border-radius: 24px;
+      background: rgba(255,255,255,.94);
+      box-shadow: 0 10px 24px rgba(0,0,0,.12);
+      text-align: center;
+      cursor: pointer;
+      transition: transform .18s ease, opacity .18s ease;
+    }
+    .island-node:hover { transform: translateY(-3px); }
+    .island-node.locked { opacity: .6; }
+    .node-badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #fef3c7;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    @media(max-width:640px){
+      .maze-board {
+        grid-template-columns: repeat(7,40px);
+        gap: 6px;
+        padding: 10px;
+      }
+      .cell { width: 40px; height: 40px; font-size: 20px; }
+      .memory-card { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="box top">
+    <div>
+      <h1 style="margin:0">Puzzle Buddies Island</h1>
+      <div class="muted">Offline-friendly puzzle fun for kids</div>
+    </div>
+
+    <div class="controls">
+      <div class="stars" id="starCount">⭐ 0</div>
+      <button class="alt" id="soundBtn">🔊 Sound On</button>
+      <button class="alt" id="musicBtn">🎵 Music Off</button>
+
+      <div class="menu-wrap">
+        <button class="alt" id="menuBtn">☰ Menu</button>
+        <div class="menu-dropdown" id="menuDropdown">
+          <button class="menu-item" id="menuMapBtn">🗺️ Map</button>
+          <button class="menu-item" id="menuHomeBtn">🏠 Home</button>
+          <button class="menu-item" id="menuStickerBtn">🎁 Stickers</button>
+          <button class="menu-item" id="menuResetBtn">🔄 Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="box" id="messageBox">Welcome, explorer!</div>
+  <div id="app"></div>
+</div>
+
+<script>
+(function(){
+  const characters=[
+    {id:'cat',name:'Sunny Cat',emoji:'🐱',unlockStars:0,chestOnly:false},
+    {id:'dog',name:'Buddy Pup',emoji:'🐶',unlockStars:3,chestOnly:false},
+    {id:'frog',name:'Bouncy Frog',emoji:'🐸',unlockStars:5,chestOnly:false},
+    {id:'monkey',name:'Milo Monkey',emoji:'🐵',unlockStars:8,chestOnly:false},
+    {id:'lion',name:'Lucky Lion',emoji:'🦁',unlockStars:999,chestOnly:true}
+  ];
+  const stickers=['⭐ Super Star','🏆 Treasure Champ','🌈 Rainbow Finder','🦁 Brave Explorer','🍉 Puzzle Pro','🚀 Fast Thinker','🧩 Brain Builder','🎉 Happy Solver','🏝️ Island Hero'];
+  const islands=[
+    {id:1,name:'Beach',icon:'🏖️',starsNeeded:0},
+    {id:2,name:'Jungle',icon:'🌴',starsNeeded:3},
+    {id:3,name:'Volcano',icon:'🌋',starsNeeded:6}
+  ];
+  const memorySets={1:['🐶','🐱','🐸','🐵'],2:['🦊','🐼','🐨','🦁','🐰','🐻'],3:['🍎','🍌','🍇','🍉','🍒','🍍','🥝','🍓']};
+  const shapeRounds=[
+    {emoji:'⭐',options:['⭐','🔺','⭕']},
+    {emoji:'🔺',options:['🔺','⭐','🟦']},
+    {emoji:'⭕',options:['🔺','⭕','❤️']},
+    {emoji:'🟦',options:['🟦','⭐','⭕']},
+    {emoji:'❤️',options:['⭕','❤️','🔺']}
+  ];
+  const mazes={
+    1:[
+      ['P','0','K','0','1','0','T'],
+      ['1','0','1','0','1','0','1'],
+      ['0','0','0','0','1','0','0'],
+      ['0','1','1','0','0','1','0'],
+      ['0','0','0','1','0','0','0'],
+      ['1','0','1','0','0','1','0'],
+      ['T','0','0','0','1','0','G']
+    ],
+    2:[
+      ['P','0','1','0','K','1','0'],
+      ['1','0','1','0','1','0','0'],
+      ['0','0','1','0','1','0','1'],
+      ['0','1','0','0','0','0','0'],
+      ['0','1','0','1','1','1','0'],
+      ['0','0','0','0','0','1','0'],
+      ['1','1','1','1','0','0','G']
+    ],
+    3:[
+      ['P','0','1','0','0','1','0'],
+      ['0','0','1','0','1','0','0'],
+      ['0','1','1','0','1','0','1'],
+      ['0','0','0','K','0','0','0'],
+      ['1','1','0','1','1','0','1'],
+      ['0','0','0','0','1','0','0'],
+      ['0','1','1','0','0','0','G']
+    ]
+  };
+
+  let state={
+    screen:'menu',
+    activeIsland:1,
+    stars:0,
+    completed:[],
+    message:'Welcome, explorer!',
+    soundOn:true,
+    musicOn:false,
+    selectedCharacter:'cat',
+    stickerBook:[],
+    unlocked:['cat'],
+    lastChestOpen:0,
+    latestReward:'',
+    memoryDeck:[],
+    memoryPicked:[],
+    memoryBusy:false,
+    shapeGame:{rounds:[],index:0,cheer:''},
+    maze:{grid:[],player:{r:0,c:0},goal:{r:0,c:0},cheer:'',hasKey:false,starsCollected:0,footprints:[]}
+  };
+
+  const app=document.getElementById('app');
+  const msg=document.getElementById('messageBox');
+  const star=document.getElementById('starCount');
+  const soundBtn=document.getElementById('soundBtn');
+  const musicBtn=document.getElementById('musicBtn');
+  const menuBtn=document.getElementById('menuBtn');
+  const menuDropdown=document.getElementById('menuDropdown');
+
+  function shuffle(arr){
+    const a=arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  function save(){
+    localStorage.setItem('pbi-save-v3',JSON.stringify({
+      stars:state.stars,
+      completed:state.completed,
+      soundOn:state.soundOn,
+      musicOn:state.musicOn,
+      selectedCharacter:state.selectedCharacter,
+      stickerBook:state.stickerBook,
+      unlocked:state.unlocked,
+      lastChestOpen:state.lastChestOpen,
+      latestReward:state.latestReward
+    }));
+  }
+
+  function load(){
+    try{
+      const s=JSON.parse(localStorage.getItem('pbi-save-v3')||'null');
+      if(!s)return;
+      state.stars=s.stars||0;
+      state.completed=s.completed||[];
+      state.soundOn=s.soundOn!==false;
+      state.musicOn=s.musicOn===true;
+      state.selectedCharacter=s.selectedCharacter||'cat';
+      state.stickerBook=s.stickerBook||[];
+      state.unlocked=s.unlocked||['cat'];
+      state.lastChestOpen=s.lastChestOpen||0;
+      state.latestReward=s.latestReward||'';
+    }catch(e){}
+  }
+
+  function say(t){
+    state.message=t;
+    msg.textContent=t;
+  }
+
+  function currentChar(){
+    return characters.find(c=>c.id===state.selectedCharacter)||characters[0];
+  }
+
+  function isUnlocked(id){
+    return state.unlocked.indexOf(id)!==-1;
+  }
+
+  function unlockByStars(){
+    let changed=false;
+    characters.forEach(c=>{
+      if(!c.chestOnly && state.stars>=c.unlockStars && !isUnlocked(c.id)){
+        state.unlocked.push(c.id);
+        state.latestReward=c.emoji+' '+c.name+' joined your team!';
+        changed=true;
+      }
+    });
+    if(changed)save();
+  }
+
+  function updateTop(){
+    star.textContent='⭐ '+state.stars;
+    soundBtn.textContent=state.soundOn?'🔊 Sound On':'🔈 Sound Off';
+    musicBtn.textContent=state.musicOn?'🎵 Music On':'🎵 Music Off';
+    unlockByStars();
+  }
+
+  function canOpenChest(){
+    return !state.lastChestOpen || (Date.now()-state.lastChestOpen)>=24*60*60*1000;
+  }
+
+  let audioCtx=null,bgInt=null;
+  function ctx(){
+    if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    return audioCtx;
+  }
+  function beep(f,d,v,t){
+    if(!state.soundOn)return;
+    const c=ctx(),o=c.createOscillator(),g=c.createGain(),n=c.currentTime;
+    o.type=t||'sine';
+    o.frequency.setValueAtTime(f,n);
+    g.gain.setValueAtTime(v||0.08,n);
+    g.gain.exponentialRampToValueAtTime(0.0001,n+d);
+    o.connect(g);
+    g.connect(c.destination);
+    o.start(n);
+    o.stop(n+d);
+  }
+  function sound(kind){
+    if(kind==='click'){
+      beep(620,0.08,0.06,'sine');
+      setTimeout(()=>beep(820,0.08,0.04,'triangle'),20);
+    } else if(kind==='wrong'){
+      beep(240,0.12,0.07,'sawtooth');
+      setTimeout(()=>beep(180,0.12,0.05,'sawtooth'),60);
+    } else if(kind==='win'){
+      beep(523,0.08,0.06,'triangle');
+      setTimeout(()=>beep(659,0.08,0.06,'triangle'),80);
+      setTimeout(()=>beep(784,0.16,0.06,'triangle'),160);
+    } else if(kind==='animal'){
+      beep(700,0.06,0.04,'square');
+      setTimeout(()=>beep(900,0.06,0.04,'square'),50);
+    } else if(kind==='maze'){
+      beep(480,0.05,0.04,'sine');
+    }
+  }
+  function startMusic(){
+    if(!state.soundOn||bgInt)return;
+    const notes=[392,440,523,440];
+    let i=0;
+    bgInt=setInterval(()=>{
+      beep(notes[i%notes.length],0.18,0.02,'triangle');
+      i++;
+    },320);
+  }
+  function stopMusic(){
+    if(bgInt){
+      clearInterval(bgInt);
+      bgInt=null;
+    }
+  }
+
+  function rewardPuzzle(id){
+    if(state.completed.indexOf(id)===-1){
+      state.stars++;
+      state.completed.push(id);
+      const st=stickers[Math.floor(Math.random()*stickers.length)];
+      state.stickerBook.push(st);
+      state.latestReward='🎁 New sticker: '+st;
+      say('Nice job! You earned a star and a sticker! ⭐');
+    }else{
+      say('You solved it again! Great job! 🎉');
+    }
+    save();
+    updateTop();
+    sound('win');
+    state.screen='reward';
+    render();
+  }
+
+  function openChest(){
+    if(!canOpenChest()){
+      say('Your daily chest is resting. Come back later!');
+      sound('wrong');
+      return;
+    }
+    const lion=characters.find(c=>c.chestOnly&&!isUnlocked(c.id));
+    const r=Math.random();
+    let text='';
+    if(lion && r<0.2){
+      state.unlocked.push(lion.id);
+      text=lion.emoji+' You unlocked '+lion.name+'!';
+    } else if(r<0.6){
+      const add=Math.random()<0.5?2:3;
+      state.stars+=add;
+      text='⭐ You found '+add+' bonus stars!';
+    } else {
+      const st=stickers[Math.floor(Math.random()*stickers.length)];
+      state.stickerBook.push(st);
+      text='🎁 New sticker: '+st;
+    }
+    state.lastChestOpen=Date.now();
+    state.latestReward=text;
+    unlockByStars();
+    save();
+    updateTop();
+    sound('win');
+    state.screen='chest';
+    render();
+  }
+
+  function selectCharacter(id){
+    if(!isUnlocked(id))return;
+    state.selectedCharacter=id;
+    save();
+    sound('click');
+    render();
+  }
+
+  function toMap(){
+    state.screen='map';
+    render();
+  }
+
+  function toHome(){
+    state.screen='menu';
+    render();
+  }
+
+  function toStickers(){
+    state.screen='stickers';
+    render();
+  }
+
+  function resetAll(){
+    state.stars=0;
+    state.completed=[];
+    state.selectedCharacter='cat';
+    state.stickerBook=[];
+    state.unlocked=['cat'];
+    state.lastChestOpen=0;
+    state.latestReward='';
+    state.musicOn=false;
+    stopMusic();
+    save();
+    updateTop();
+    say('Progress reset. New adventure started!');
+    state.screen='menu';
+    render();
+  }
+
+  function enterIsland(id){
+    state.activeIsland=id;
+    state.screen='island';
+    render();
+  }
+
+  function backIsland(){
+    state.screen='island';
+    render();
+  }
+
+  function startMemory(){
+    const sym=memorySets[state.activeIsland];
+    state.memoryDeck=shuffle(sym.concat(sym)).map((e,i)=>({id:i,emoji:e,flipped:false,matched:false}));
+    state.memoryPicked=[];
+    state.memoryBusy=false;
+    state.screen='memory';
+    render();
+  }
+
+  function flipMemory(id){
+    sound('animal');
+    if(state.memoryBusy)return;
+    const c=state.memoryDeck.find(x=>x.id===id);
+    if(!c||c.flipped||c.matched)return;
+    c.flipped=true;
+    state.memoryPicked.push(c);
+    renderMemory();
+    if(state.memoryPicked.length===2){
+      state.memoryBusy=true;
+      const a=state.memoryPicked[0],b=state.memoryPicked[1];
+      if(a.emoji===b.emoji){
+        setTimeout(()=>{
+          a.matched=true;
+          b.matched=true;
+          state.memoryPicked=[];
+          state.memoryBusy=false;
+          renderMemory();
+          if(state.memoryDeck.every(x=>x.matched))rewardPuzzle('memory-'+state.activeIsland);
+        },450);
+      } else {
+        setTimeout(()=>{
+          a.flipped=false;
+          b.flipped=false;
+          state.memoryPicked=[];
+          state.memoryBusy=false;
+          renderMemory();
+        },800);
+      }
+    }
+  }
+
+  function startShapes(){
+    const count=state.activeIsland===1?3:state.activeIsland===2?4:5;
+    state.shapeGame={rounds:shuffle(shapeRounds).slice(0,count),index:0,cheer:''};
+    state.screen='shapes';
+    render();
+  }
+
+  function pickShape(opt){
+    const cur=state.shapeGame.rounds[state.shapeGame.index];
+    if(opt===cur.emoji){
+      sound('click');
+      state.shapeGame.cheer='Great job! 🎉';
+      renderShapes();
+      if(state.shapeGame.index+1>=state.shapeGame.rounds.length){
+        setTimeout(()=>rewardPuzzle('shapes-'+state.activeIsland),500);
+      } else {
+        setTimeout(()=>{
+          state.shapeGame.index++;
+          state.shapeGame.cheer='';
+          renderShapes();
+        },450);
+      }
+    } else {
+      sound('wrong');
+      state.shapeGame.cheer='Try again! 😊';
+      renderShapes();
+    }
+  }
+
+  function startMaze(){
+    const layout=mazes[state.activeIsland].map(r=>r.slice());
+    let player={r:0,c:0},goal={r:0,c:0};
+
+    for(let r=0;r<layout.length;r++){
+      for(let c=0;c<layout[r].length;c++){
+        if(layout[r][c]==='P')player={r,c};
+        if(layout[r][c]==='G')goal={r,c};
+      }
+    }
+
+    if(state.activeIsland===1){layout[2][2]='S';layout[4][5]='S';}
+    if(state.activeIsland===2){layout[1][5]='S';layout[5][1]='S';layout[3][6]='S';}
+    if(state.activeIsland===3){layout[0][3]='S';layout[5][5]='S';layout[6][0]='S';}
+
+    state.maze={grid:layout,player,goal,cheer:'',hasKey:false,starsCollected:0,footprints:[`${player.r},${player.c}`]};
+    state.screen='maze';
+    render();
+  }
+
+  function moveMaze(dr,dc){
+    sound('maze');
+    const nr=state.maze.player.r+dr,nc=state.maze.player.c+dc;
+    if(nr<0||nc<0||nr>=state.maze.grid.length||nc>=state.maze.grid[0].length)return;
+    const tile=state.maze.grid[nr][nc];
+    if(tile==='1'){
+      state.maze.cheer='Oops, that way is blocked!';
+      renderMaze();
+      return;
+    }
+
+    if(tile==='T'){
+      state.maze.player={r:state.maze.grid.length-1-nr,c:state.maze.grid[0].length-1-nc};
+      state.maze.cheer='Teleport! 🌀';
+      const tp=`${state.maze.player.r},${state.maze.player.c}`;
+      if(!state.maze.footprints.includes(tp)) state.maze.footprints.push(tp);
+      renderMaze();
+      return;
+    }
+
+    state.maze.player={r:nr,c:nc};
+    const step=`${nr},${nc}`;
+    if(!state.maze.footprints.includes(step)) state.maze.footprints.push(step);
+
+    if(tile==='K'){
+      state.maze.hasKey=true;
+      state.maze.grid[nr][nc]='0';
+      state.maze.cheer='You found a key! 🔑';
+    } else if(tile==='S'){
+      state.maze.starsCollected++;
+      state.maze.grid[nr][nc]='0';
+      state.maze.cheer='You found a star! ⭐';
+    } else {
+      state.maze.cheer='';
+    }
+
+    if(nr===state.maze.goal.r&&nc===state.maze.goal.c){
+      if(state.maze.hasKey){
+        state.maze.cheer='You used the key and found treasure! 🏆';
+        state.stars += state.maze.starsCollected;
+        save();
+        updateTop();
+        renderMaze();
+        setTimeout(()=>rewardPuzzle('maze-'+state.activeIsland),600);
+        return;
+      } else {
+        state.maze.cheer='Find the key first! 🔑';
+      }
+    }
+    renderMaze();
+  }
+
+  function render(){
+    updateTop();
+    const ch=currentChar();
+
+    if(state.screen==='menu'){
+      app.innerHTML=`
+        <div class="box center" style="padding:28px 18px;max-width:760px;margin:0 auto">
+          <div class="hero" style="font-size:70px">${ch.emoji}✨</div>
+          <h2 style="margin:8px 0 8px;font-size:34px">Puzzle Buddies Island</h2>
+          <p class="muted" style="max-width:520px;margin:0 auto 20px;font-size:18px">Tap the big button and start playing right away.</p>
+
+          <div style="display:grid;gap:14px;max-width:380px;margin:0 auto 18px">
+            <button id="playBtn" style="font-size:24px;padding:20px;border-radius:24px;box-shadow:0 10px 20px rgba(37,99,235,.22)">🎮 PLAY NOW</button>
+            <button id="surpriseBtn" style="font-size:20px;padding:16px;border-radius:22px;background:#22c55e;box-shadow:0 10px 20px rgba(34,197,94,.22)">🎲 Surprise Game</button>
+            <button id="chestBtn" style="font-size:20px;padding:16px;border-radius:22px;background:#f59e0b;box-shadow:0 10px 20px rgba(245,158,11,.22)">📦 Daily Chest</button>
+          </div>
+
+          <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+            <div class="stars">⭐ ${state.stars}</div>
+            <button class="alt" id="stickersBtn">🎁 Stickers</button>
+            <button class="alt" id="mapBtn2">🗺️ Map</button>
+          </div>
+
+          <div style="margin-top:18px">
+            <h3 style="margin-bottom:10px">Choose Your Buddy</h3>
+            <div class="grid">
+              ${characters.map(c=>`
+                <div class="card" data-char="${c.id}" style="border:${state.selectedCharacter===c.id?'3px solid #2563eb':'3px solid transparent'};opacity:${isUnlocked(c.id)?'1':'0.5'};cursor:${isUnlocked(c.id)?'pointer':'default'}">
+                  <div class="icon">${c.emoji}</div>
+                  <h3>${c.name}</h3>
+                  <div class="muted">${isUnlocked(c.id)?'Tap to use':(c.chestOnly?'Chest only':'Unlock at '+c.unlockStars+'⭐')}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>`;
+
+      document.getElementById('playBtn').onclick=()=>{
+        const available=islands.filter(i=>state.stars>=i.starsNeeded);
+        const island=available[0];
+        state.activeIsland=island.id;
+        sound('click');
+        startMemory();
+      };
+
+      document.getElementById('surpriseBtn').onclick=()=>{
+        const available=islands.filter(i=>state.stars>=i.starsNeeded);
+        const island=available[Math.floor(Math.random()*available.length)];
+        state.activeIsland=island.id;
+        const games=['memory','shapes','maze'];
+        const game=games[Math.floor(Math.random()*games.length)];
+        sound('click');
+        if(game==='memory') startMemory();
+        if(game==='shapes') startShapes();
+        if(game==='maze') startMaze();
+      };
+
+      document.getElementById('chestBtn').onclick=openChest;
+      document.getElementById('stickersBtn').onclick=toStickers;
+      document.getElementById('mapBtn2').onclick=toMap;
+      document.querySelectorAll('[data-char]').forEach(el=>{
+        el.onclick=()=>selectCharacter(el.getAttribute('data-char'));
+      });
+      return;
+    }
+
+    if(state.screen==='chest'){
+      app.innerHTML=`
+        <div class="box center">
+          <div class="hero">${ch.emoji}📦</div>
+          <h2>Daily Chest Opened!</h2>
+          <p class="muted" style="margin:12px 0 18px">Come back tomorrow for another surprise.</p>
+          <div class="card" style="max-width:420px;margin:0 auto 18px;background:#fef3c7">
+            <div style="font-size:54px;margin-bottom:8px">✨</div>
+            <h3>Your Reward</h3>
+            <p style="font-size:24px;margin-top:10px;font-weight:bold">${state.latestReward||'⭐ Bonus reward!'}</p>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button id="homeBtn">Back Home</button>
+            <button class="alt" id="playBtn2">Play Now</button>
+          </div>
+        </div>`;
+      document.getElementById('homeBtn').onclick=toHome;
+      document.getElementById('playBtn2').onclick=toMap;
+      return;
+    }
+
+    if(state.screen==='reward'){
+      app.innerHTML=`
+        <div class="box center">
+          <div class="hero">${ch.emoji}</div>
+          <h2>You Did It!</h2>
+          <p class="muted" style="margin:12px 0 18px">Your buddy is proud of you.</p>
+          <div class="card" style="max-width:420px;margin:0 auto 18px;background:#fef3c7">
+            <div style="font-size:54px;margin-bottom:8px">🎁</div>
+            <h3>New Reward Unlocked</h3>
+            <p style="font-size:24px;margin-top:10px;font-weight:bold">${state.latestReward||'⭐ Great job!'}</p>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button id="keepBtn">Keep Playing</button>
+            <button class="alt" id="bookBtn">Open Sticker Book</button>
+          </div>
+        </div>`;
+      document.getElementById('keepBtn').onclick=toMap;
+      document.getElementById('bookBtn').onclick=toStickers;
+      return;
+    }
+
+    if(state.screen==='stickers'){
+      app.innerHTML=`
+        <div class="box center">
+          <div class="hero">${ch.emoji}🎁</div>
+          <h2>Sticker Book</h2>
+          <p class="muted" style="margin:12px 0 18px">Collect stickers by solving puzzles.</p>
+          <div class="grid">
+            ${
+              state.stickerBook.length
+                ? state.stickerBook.map(s=>`
+                  <div class="card" style="background:#ecfeff">
+                    <div style="font-size:38px;margin-bottom:8px">✨</div>
+                    <h3>${s}</h3>
+                 ewport" content="width=device-width, initial-scale=1.0" />
   <title>Puzzle Buddies Island</title>
   <style>
     *{box-sizing:border-box}
