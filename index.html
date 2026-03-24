@@ -82,7 +82,7 @@
     <div class="controls">
       <div class="stars" id="starCount">⭐ 0</div>
       <button class="alt" id="soundBtn">🔊 Sound On</button>
-      <button class="alt" id="musicBtn">🎵 Music Off</button>
+      
       <div class="menu-wrap">
         <button class="alt" id="menuBtn">☰ Menu</button>
         <div class="menu-dropdown" id="menuDropdown">
@@ -173,18 +173,16 @@
   function bindTopMenu(){const menuBtn=document.getElementById('menuBtn');const menuDropdown=document.getElementById('menuDropdown');const menuMapBtn=document.getElementById('menuMapBtn');const menuStickersBtn=document.getElementById('menuStickersBtn');const menuChestBtn=document.getElementById('menuChestBtn');const menuBuddyBtn=document.getElementById('menuBuddyBtn');const menuResetBtn=document.getElementById('menuResetBtn');if(menuBtn&&menuDropdown){menuBtn.onclick=(e)=>{e.stopPropagation();menuDropdown.classList.toggle('show')}}if(menuMapBtn)menuMapBtn.onclick=()=>{closeMenu();toMap()};if(menuStickersBtn)menuStickersBtn.onclick=()=>{closeMenu();state.screen='stickers';render()};if(menuChestBtn)menuChestBtn.onclick=()=>{closeMenu();openChest()};if(menuBuddyBtn)menuBuddyBtn.onclick=()=>{closeMenu();openBuddies()};if(menuResetBtn)menuResetBtn.onclick=()=>{closeMenu();resetAll()}}
   function canOpenChest(){return !state.lastChestOpen||(Date.now()-state.lastChestOpen)>=24*60*60*1000}
 
-  let audioCtx=null,bgInt=null;
+  let audioCtx=null;
   function ctx(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();return audioCtx}
   function beep(f,d,v,t){if(!state.soundOn)return;const c=ctx(),o=c.createOscillator(),g=c.createGain(),n=c.currentTime;o.type=t||'sine';o.frequency.setValueAtTime(f,n);g.gain.setValueAtTime(v||0.03,n);g.gain.exponentialRampToValueAtTime(0.0001,n+d);o.connect(g);g.connect(c.destination);o.start(n);o.stop(n+d)}
-  function sound(kind){if(kind==='click'){beep(520,0.05,0.03,'triangle')}else if(kind==='wrong'){beep(240,0.08,0.04,'sine');setTimeout(()=>beep(200,0.08,0.03,'sine'),70)}else if(kind==='win'){beep(523,0.09,0.04,'triangle');setTimeout(()=>beep(659,0.09,0.04,'triangle'),100);setTimeout(()=>beep(784,0.16,0.04,'triangle'),200)}else if(kind==='animal'){beep(660,0.05,0.03,'triangle')}else if(kind==='maze'){beep(420,0.04,0.025,'triangle')}}
-  function startMusic(){if(!state.soundOn||bgInt)return;const melody=[392,440,523,587,523,440];let i=0;bgInt=setInterval(()=>{beep(melody[i%melody.length],0.25,0.012,'triangle');i++},550)}
-  function stopMusic(){if(bgInt){clearInterval(bgInt);bgInt=null}}
+  function sound(kind){if(kind==='click'){beep(520,0.05,0.03,'triangle')}else if(kind==='wrong'){beep(240,0.08,0.04,'sine');setTimeout(()=>beep(200,0.08,0.03,'sine'),70)}else if(kind==='win'){beep(523,0.09,0.04,'triangle');setTimeout(()=>beep(659,0.09,0.04,'triangle'),100);setTimeout(()=>beep(784,0.16,0.04,'triangle'),200)}else if(kind==='animal'){beep(660,0.05,0.03,'triangle')}else if(kind==='maze'){beep(420,0.04,0.025,'triangle')}}}
 
   function rewardPuzzle(id){if(state.completed.indexOf(id)===-1){state.stars++;state.completed.push(id);const st=stickers[Math.floor(Math.random()*stickers.length)];state.stickerBook.push(st);state.latestReward='🎁 New sticker: '+st;say('Nice job! You earned a star and a sticker! ⭐')}else{say('You solved it again! Great job! 🎉')}save();updateTop();sound('win');state.screen='reward';render()}
   function openChest(){if(!canOpenChest()){say('Your daily chest is resting. Come back later!');sound('wrong');render();return;}const lion=characters.find(c=>c.chestOnly&&!isUnlocked(c.id));const r=Math.random();let text='';if(lion&&r<0.2){state.unlocked.push(lion.id);text=lion.emoji+' You unlocked '+lion.name+'!'}else if(r<0.6){const add=Math.random()<0.5?2:3;state.stars+=add;text='⭐ You found '+add+' bonus stars!'}else{const st=stickers[Math.floor(Math.random()*stickers.length)];state.stickerBook.push(st);text='🎁 New sticker: '+st}state.lastChestOpen=Date.now();state.latestReward=text;unlockByStars();save();updateTop();sound('win');state.screen='chest';render()}
   function selectCharacter(id){if(!isUnlocked(id))return;state.selectedCharacter=id;save();sound('click');render()}
   function toMap(){state.screen='map';render()}
-  function resetAll(){state.stars=0;state.completed=[];state.selectedCharacter='cat';state.stickerBook=[];state.unlocked=['cat'];state.lastChestOpen=0;state.latestReward='';state.musicOn=false;stopMusic();save();updateTop();say('Progress reset. New adventure started!');state.screen='menu';render()}
+  function resetAll(){state.stars=0;state.completed=[];state.selectedCharacter='cat';state.stickerBook=[];state.unlocked=['cat'];state.lastChestOpen=0;state.latestReward='';save();updateTop();say('Progress reset. New adventure started!');state.screen='menu';render()}
   function enterIsland(id){state.activeIsland=id;state.screen='island';render()}
   function backIsland(){state.screen='island';render()}
 
@@ -219,8 +217,8 @@
   bindTopMenu();
   document.addEventListener('click',(e)=>{const wrap=document.querySelector('.menu-wrap');if(wrap&&!wrap.contains(e.target))closeMenu()});
   soundBtn.onclick=()=>{state.soundOn=!state.soundOn;if(!state.soundOn){state.musicOn=false;stopMusic()}else sound('click');save();render()};
-  musicBtn.onclick=()=>{state.musicOn=!state.musicOn;if(state.musicOn&&state.soundOn){startMusic();sound('click')}else stopMusic();save();render()};
-  load();updateTop();if(state.musicOn&&state.soundOn)setTimeout(startMusic,300);render();
+  if(state.musicOn&&state.soundOn){startMusic();sound('click')}else stopMusic();save();render()};
+  load();updateTop();render();
 })();
 </script>
 </body>
