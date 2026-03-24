@@ -190,9 +190,36 @@
   let audioCtx=null,bgInt=null;
   function ctx(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();return audioCtx}
   function beep(f,d,v,t){if(!state.soundOn)return;const c=ctx(),o=c.createOscillator(),g=c.createGain(),n=c.currentTime;o.type=t||'sine';o.frequency.setValueAtTime(f,n);g.gain.setValueAtTime(v||0.08,n);g.gain.exponentialRampToValueAtTime(0.0001,n+d);o.connect(g);g.connect(c.destination);o.start(n);o.stop(n+d)}
-  function sound(kind){if(kind==='click'){beep(620,0.08,0.06,'sine');setTimeout(()=>beep(820,0.08,0.04,'triangle'),20)} else if(kind==='wrong'){beep(240,0.12,0.07,'sawtooth');setTimeout(()=>beep(180,0.12,0.05,'sawtooth'),60)} else if(kind==='win'){beep(523,0.08,0.06,'triangle');setTimeout(()=>beep(659,0.08,0.06,'triangle'),80);setTimeout(()=>beep(784,0.16,0.06,'triangle'),160)} else if(kind==='animal'){beep(700,0.06,0.04,'square');setTimeout(()=>beep(900,0.06,0.04,'square'),50)} else if(kind==='maze'){beep(480,0.05,0.04,'sine')}}
-  function startMusic(){if(!state.soundOn||bgInt)return;const notes=[392,440,523,440];let i=0;bgInt=setInterval(()=>{beep(notes[i%notes.length],0.18,0.02,'triangle');i++},320)}
-  function stopMusic(){if(bgInt){clearInterval(bgInt);bgInt=null}}
+  function sound(kind){
+  if(kind === 'click'){
+    beep(520, 0.05, 0.03, 'triangle');
+  } else if(kind === 'wrong'){
+    beep(240, 0.08, 0.04, 'sine');
+    setTimeout(()=>beep(200, 0.08, 0.03, 'sine'),70);
+  } else if(kind === 'win'){
+    beep(523, 0.09, 0.04, 'triangle');
+    setTimeout(()=>beep(659, 0.09, 0.04, 'triangle'),100);
+    setTimeout(()=>beep(784, 0.16, 0.04, 'triangle'),200);
+  } else if(kind === 'animal'){
+    beep(660, 0.05, 0.03, 'triangle');
+  } else if(kind === 'maze'){
+    beep(420, 0.04, 0.025, 'triangle');
+  }
+} else if(kind==='wrong'){beep(240,0.12,0.07,'sawtooth');setTimeout(()=>beep(180,0.12,0.05,'sawtooth'),60)} else if(kind==='win'){beep(523,0.08,0.06,'triangle');setTimeout(()=>beep(659,0.08,0.06,'triangle'),80);setTimeout(()=>beep(784,0.16,0.06,'triangle'),160)} else if(kind==='animal'){beep(700,0.06,0.04,'square');setTimeout(()=>beep(900,0.06,0.04,'square'),50)} else if(kind==='maze'){beep(480,0.05,0.04,'sine')}}
+  function startMusic(){
+  if(!state.soundOn || bgInt) return;
+
+  const melody = [392, 440, 523, 587, 523, 440];
+  let i = 0;
+
+  bgInt = setInterval(() => {
+    beep(melody[i % melody.length], 0.25, 0.012, 'triangle');
+    i++;
+  }, 550);
+},320)}
+  function stopMusic(){
+  if(bgInt){
+    clearInterval(bgIn}
 
   function rewardPuzzle(id){if(state.completed.indexOf(id)===-1){state.stars++;state.completed.push(id);const st=stickers[Math.floor(Math.random()*stickers.length)];state.stickerBook.push(st);state.latestReward='🎁 New sticker: '+st;say('Nice job! You earned a star and a sticker! ⭐')}else{say('You solved it again! Great job! 🎉')}save();updateTop();sound('win');state.screen='reward';render()}
   function openChest(){if(!canOpenChest()){say('Your daily chest is resting. Come back later!');sound('wrong');render();return;}const lion=characters.find(c=>c.chestOnly&&!isUnlocked(c.id));const r=Math.random();let text='';if(lion&&r<0.2){state.unlocked.push(lion.id);text=lion.emoji+' You unlocked '+lion.name+'!'}else if(r<0.6){const add=Math.random()<0.5?2:3;state.stars+=add;text='⭐ You found '+add+' bonus stars!'}else{const st=stickers[Math.floor(Math.random()*stickers.length)];state.stickerBook.push(st);text='🎁 New sticker: '+st}state.lastChestOpen=Date.now();state.latestReward=text;unlockByStars();save();updateTop();sound('win');state.screen='chest';render()}
